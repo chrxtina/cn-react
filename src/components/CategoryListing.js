@@ -59,23 +59,22 @@ class CategoryListing extends React.Component {
   }
 
   render () {
+    const { match } = this.props
     return (
       <div>
         <h3>Categories</h3>
         <ul>
-          {
-            this.state.categories.map( (category) => {
-              return (
-                <li key={category.id}>
-                  <Link to={`${category.name}`}>
-                    {category.name}
-                  </Link>
-                </li>
-              )
-            })
-          }
+          {this.state.categories.map( (category) => {
+            return (
+              <li key={category.id}>
+                <Link to={`${match.url}/${category.name}`}>
+                  {category.name}
+                </Link>
+              </li>
+            )
+            })}
         </ul>
-        <Route path='/:category'
+        <Route path={`${match.url}/:category`}
           render={ (props) => <ItemListing data= {this.state.categories} {...props} />} />
       </div>
     )

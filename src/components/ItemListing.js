@@ -3,7 +3,7 @@ import ItemDetails from './ItemDetails';
 import { Link, Route } from 'react-router-dom';
 
 const ItemListing = ( {match, data}) => {
-  let category = data.find(c => c.name === match.params.category);
+  let category = data.find(category => category.name === match.params.category);
   let categoryItems;
 
   if (category) {
@@ -20,10 +20,12 @@ const ItemListing = ( {match, data}) => {
 
   return (
     <div>
+      <h4>{category.name}</h4>
       <ul>
         {categoryItems}
       </ul>
-      <Route path='/:category/:itemId'
+
+      <Route path={`${match.url}/:itemId`}
         render={ (props) => <ItemDetails data= {category.items} {...props} />} />
     </div>
   )
