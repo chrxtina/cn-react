@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import { withRouter } from 'react-router-dom';
+import { graphql} from 'react-apollo';
+import gql from 'graphql-tag';
 
 class NewItem extends Component {
 
@@ -7,11 +10,10 @@ class NewItem extends Component {
     this.state = {
         category: "",
         name: "",
-        desc: "",
+        description: "",
         location: ""
     }
     this.handleInputChange = this.handleInputChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleInputChange(event) {
@@ -21,11 +23,6 @@ class NewItem extends Component {
     this.setState({
       [name]: value
     });
-  }
-
-  handleSubmit(event) {
-    event.preventDefault();
-    console.log(this.state);
   }
 
   render() {
@@ -54,8 +51,8 @@ class NewItem extends Component {
           <label>
             Description:
             <textarea
-              name="desc"
-              value={this.state.desc}
+              name="description"
+              value={this.state.description}
               onChange={this.handleInputChange}
             />
           </label>
@@ -73,6 +70,26 @@ class NewItem extends Component {
       </div>
     );
   }
+
+  handleSubmit = async (event) => {
+    event.preventDefault();
+    const {name, description, location} = this.state;
+    await this.props.createItemMutation({variables: {name, description, location}});
+    this.props.history.replace('/');
+  }
 }
 
-export default NewItem;
+const CREATE_ITEM_MUTATION = gql`
+  mutation CreateItemMutation($name: String!, $description: String!, $location: String!) {
+    createItem(name: $name, description: $description, location: $location) {
+      id
+      name
+      description
+      location
+    }
+  }
+`;
+
+const NewItemWithMutation = graphql(CREATE_ITEM_MUTATION, {name: 'createItemMutation'})(NewItem);
+
+export default withRouter(NewItemWithMutation);
