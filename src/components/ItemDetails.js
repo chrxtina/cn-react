@@ -1,22 +1,47 @@
-import React from 'react';
+import React, { Component } from 'react';
+import gql from 'graphql-tag';
+import { graphql } from 'react-apollo';
 
-const ItemDetails = ( {match, data}) => {
-  let item = data.find(item => item.id === match.params.itemId);
-  let itemDetails;
+class ItemDetails extends Component {
+  render() {
 
-  if (item) {
-    itemDetails = <div>
-      <h5> {item.name} </h5>
-      <p> {item.description} </p>
-      <p> {item.location} </p>
-    </div>
+    const { Item } = this.props.itemQuery;
+    console.log(Item);
+
+    return (
+      <div>
+        <div>
+          {/* {Item.name} */}
+        </div>
+        <div>
+          {/* {Item.description} */}
+        </div>
+        <div>
+          {/* {Item.location} */}
+        </div>
+      </div>
+    );
   }
-
-  return (
-    <div>
-        {itemDetails}
-    </div>
-  )
 }
 
-export default ItemDetails;
+const ITEM_QUERY = gql`
+  query ItemQuery($id: ID!) {
+    Item(id: $id) {
+      id
+      name
+      description
+      location
+    }
+  }
+`;
+
+const ItemDetailsWithQuery = graphql(ITEM_QUERY, {
+  name: 'itemQuery',
+  options: ({match}) => ({
+    variables: {
+      id: match.params.itemId,
+    }
+  }),
+})(ItemDetails);
+
+export default ItemDetailsWithQuery;
