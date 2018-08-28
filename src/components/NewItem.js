@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { graphql } from 'react-apollo';
+import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 
 class NewItem extends Component {
@@ -8,10 +8,10 @@ class NewItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-        category: "",
         name: "",
         description: "",
-        location: ""
+        location: "",
+        categoryId: ""
     }
     this.handleInputChange = this.handleInputChange.bind(this);
   }
@@ -32,11 +32,15 @@ class NewItem extends Component {
           <label>
             Category:
             <select
-              name="category"
-              value={this.state.category}
+              name="categoryId"
+              value={this.state.categoryId}
               onChange={this.handleInputChange}>
-                <option value="books">Books</option>
-                <option value="games">Games</option>
+                <option value="" disabled>Select</option>
+                {this.props.allCategoriesQuery.allCategories && this.props.allCategoriesQuery.allCategories.map(category => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
             </select>
           </label>
           <label>
@@ -73,15 +77,24 @@ class NewItem extends Component {
 
   handleSubmit = async (event) => {
     event.preventDefault();
-    const {name, description, location} = this.state;
-    await this.props.createItemMutation({variables: {name, description, location}});
+    const {name, description, location, categoryId} = this.state;
+    await this.props.createItemMutation({variables: {name, description, location, categoryId}});
     this.props.history.replace('/');
   }
 }
 
+const ALL_CATEGORIES_QUERY = gql`
+  query AllCategoriesQuery {
+    allCategories(orderBy: name_ASC) {
+      id
+      name
+    }
+  }
+`;
+
 const CREATE_ITEM_MUTATION = gql`
-  mutation CreateItemMutation($name: String!, $description: String!, $location: String!) {
-    createItem(name: $name, description: $description, location: $location) {
+  mutation CreateItemMutation($name: String!, $description: String!, $location: String!, $categoryId: ID!) {
+    createItem(name: $name, description: $description, location: $location, categoryId: $categoryId) {
       id
       name
       description
@@ -90,6 +103,16 @@ const CREATE_ITEM_MUTATION = gql`
   }
 `;
 
-const NewItemWithMutation = graphql(CREATE_ITEM_MUTATION, {name: 'createItemMutation'})(NewItem);
+const NewItemWithMutation = compose(
+  graphql(ALL_CATEGORIES_QUERY, {
+    name: 'allCategoriesQuery',
+    options: {
+      fetchPolicy: 'network-only',
+    },
+  }),
+  graphql(CREATE_ITEM_MUTATION, {
+    name: 'createItemMutation'
+  })
+)(NewItem)
 
 export default withRouter(NewItemWithMutation);
