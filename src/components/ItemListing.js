@@ -6,6 +6,15 @@ import { graphql } from 'react-apollo';
 
 class ItemListing extends Component {
   render() {
+
+    if (this.props.categoryQuery.loading) {
+      return (
+        <div>
+          Loading
+        </div>
+      )
+    }
+
     const { match } = this.props;
 
     return (

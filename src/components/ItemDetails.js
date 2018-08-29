@@ -5,19 +5,26 @@ import { graphql } from 'react-apollo';
 class ItemDetails extends Component {
   render() {
 
+    if (this.props.itemQuery.loading) {
+      return (
+        <div>
+          Loading
+        </div>
+      )
+    }
+
     const { Item } = this.props.itemQuery;
-    console.log(Item);
 
     return (
       <div>
         <div>
-          {/* {Item.name} */}
+          {Item.name}
         </div>
         <div>
-          {/* {Item.description} */}
+          {Item.description}
         </div>
         <div>
-          {/* {Item.location} */}
+          {Item.location}
         </div>
       </div>
     );
