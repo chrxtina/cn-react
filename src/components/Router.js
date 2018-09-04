@@ -3,6 +3,7 @@ import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import App from './App';
 import CategoryListing from './CategoryListing';
 import NewItem from './NewItem';
+import CreateUser from './CreateUser';
 import NotFound from './NotFound';
 
 const Router = () => (
@@ -14,12 +15,14 @@ const Router = () => (
             <li><Link to="/">Home</Link></li>
             <li><Link to="/category">Categories</Link></li>
             <li><Link to="/new-item">Post Item</Link></li>
+            <li><Link to="/signup">Sign Up</Link></li>
           </ul>
         </nav>
         <Switch>
           <Route exact path="/" component={App} />
           <Route path="/category" component={CategoryListing}/>
           <Route path="/new-item" component={NewItem}/>
+          <Route path='/signup' component={CreateUser} />
           <Route component={NotFound}/>
         </Switch>
       </div>
