@@ -6,14 +6,12 @@ import gql from 'graphql-tag';
 class CreateUser extends React.Component {
 
   constructor(props) {
-    super()
-
+    super();
     this.state = {
       email: '',
       password: '',
-      name: '',
-      emailSubscription: false,
-    }
+      name: ''
+    };
   }
 
   render () {
@@ -60,17 +58,16 @@ class CreateUser extends React.Component {
   }
 
   signupUser = async () => {
-    const { email, password, name } = this.state
+    const { email, password, name } = this.state;
 
     try {
-      const user = await this.props.signupUserMutation({variables: {email, password, name}})
-      localStorage.setItem('graphcoolToken', user.data.signupUser.token)
-      this.props.history.replace('/')
+      const user = await this.props.signupUserMutation({variables: {email, password, name}});
+      localStorage.setItem('graphcoolToken', user.data.signupUser.token);
+      this.props.history.replace('/');
     } catch (e) {
-      console.error(`An error occured: `, e)
-      this.props.history.replace('/')
+      console.error(`An error occured: `, e);
+      this.props.history.replace('/');
     }
-
   }
 }
 
