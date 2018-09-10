@@ -12,7 +12,7 @@ class NewItem extends Component {
         description: "",
         location: "",
         categoryId: ""
-    }
+    };
     this.handleInputChange = this.handleInputChange.bind(this);
   }
 
@@ -139,6 +139,6 @@ const NewItemWithMutation = compose(
       fetchPolicy: 'network-only'
     }
   })
-)(NewItem)
+)(NewItem);
 
 export default withRouter(NewItemWithMutation);
