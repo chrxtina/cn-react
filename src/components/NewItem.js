@@ -90,8 +90,46 @@ class NewItem extends Component {
     const {name, description, location, categoryId} = this.state;
     const ownerId = this.props.loggedInUserQuery.loggedInUser.id;
 
-    await this.props.createItemMutation({variables: {name, description, location, categoryId, ownerId}});
-    this.props.history.replace('/');
+    await this.props.createItemMutation({
+      variables: {name, description, location, categoryId, ownerId},
+      refetchQueries: [
+        {
+          query: gql`
+            query UserItemsQuery {
+              user {
+                id
+                items {
+                  id
+                  name
+                  description
+                  location
+                  category {
+                    id
+                    name
+                  }
+                }
+              }
+            }
+          `,
+        },
+      {
+        query: gql`
+          query CategoryQuery($id: ID!) {
+            allCategories(filter: {id: $id} orderBy: name_ASC) {
+              id
+              name
+              items {
+                id
+                name
+              }
+            }
+          }
+        `,
+        variables: { id: this.state.categoryId },
+      }
+    ],
+    });
+    this.props.history.replace('/my-items');
   }
 }
 

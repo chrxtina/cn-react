@@ -64,6 +64,7 @@ class CreateUser extends React.Component {
       const user = await this.props.signupUserMutation({variables: {email, password, name}});
       localStorage.setItem('graphcoolToken', user.data.signupUser.token);
       this.props.history.replace('/');
+      window.location.reload();
     } catch (e) {
       console.error(`An error occured: `, e);
       this.props.history.replace('/');
