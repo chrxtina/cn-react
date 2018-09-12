@@ -50,6 +50,7 @@ class CreateLogin extends Component {
     const response = await this.props.authenticateUserMutation({variables: {email, password}});
     localStorage.setItem('graphcoolToken', response.data.authenticateUser.token);
     this.props.history.replace('/');
+    window.location.reload();
   }
 }
 
