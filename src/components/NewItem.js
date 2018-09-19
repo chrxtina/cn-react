@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
+import Dropzone from "react-dropzone";
 
 class NewItem extends Component {
 
@@ -11,7 +12,8 @@ class NewItem extends Component {
         name: "",
         description: "",
         location: "",
-        categoryId: ""
+        categoryId: "",
+        imageIds: [],
     };
     this.handleInputChange = this.handleInputChange.bind(this);
   }
@@ -22,6 +24,24 @@ class NewItem extends Component {
 
     this.setState({
       [name]: value
+    });
+  }
+
+  onDrop = (files) => {
+    let data = new FormData();
+    data.append('data', files[0]);
+
+    fetch('https://api.graph.cool/file/v1/cjl5h50yv4ufs0116k644tfp4', {
+      method: 'POST',
+      body: data
+    }).then(response => {
+      return response.json()
+    }).then(image => {
+
+      this.setState({
+        imageIds: [...this.state.imageIds, image.id]
+      });
+      console.log(this.state);
     });
   }
 
@@ -73,6 +93,12 @@ class NewItem extends Component {
               onChange={this.handleInputChange}
             />
           </label>
+          <label>Upload image</label>
+          <Dropzone
+            onDrop={this.onDrop}
+          >
+              <div>Drop an image or click to select</div>
+          </Dropzone>
           <input type="submit" value="Submit" />
         </form>
       </div>
@@ -87,11 +113,11 @@ class NewItem extends Component {
       return
     }
 
-    const {name, description, location, categoryId} = this.state;
+    const {name, description, location, categoryId, imageIds} = this.state;
     const ownerId = this.props.loggedInUserQuery.loggedInUser.id;
 
     await this.props.createItemMutation({
-      variables: {name, description, location, categoryId, ownerId},
+      variables: {name, description, location, categoryId, ownerId, imageIds},
       refetchQueries: [
         {
           query: gql`
@@ -106,6 +132,9 @@ class NewItem extends Component {
                   category {
                     id
                     name
+                  }
+                  image {
+                    url
                   }
                 }
               }
@@ -143,8 +172,8 @@ const ALL_CATEGORIES_QUERY = gql`
 `;
 
 const CREATE_ITEM_MUTATION = gql`
-  mutation CreateItemMutation($name: String!, $description: String!, $location: String!, $categoryId: ID!, $ownerId: ID!) {
-    createItem(name: $name, description: $description, location: $location, categoryId: $categoryId, ownerId: $ownerId) {
+  mutation CreateItemMutation($name: String!, $description: String!, $location: String!, $categoryId: ID!, $ownerId: ID!, $imageIds: [ID!]) {
+    createItem(name: $name, description: $description, location: $location, categoryId: $categoryId, ownerId: $ownerId, imageIds: $imageIds) {
       id
       name
       description
