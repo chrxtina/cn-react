@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
-import ItemDetails from './ItemDetails';
-import { Link, Route, withRouter } from 'react-router-dom';
+import { Route, withRouter } from 'react-router-dom';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
+import ItemListingLink from './ItemListingLink';
+import ItemDetails from './ItemDetails';
 
 class ItemListing extends Component {
   render() {
@@ -22,11 +23,7 @@ class ItemListing extends Component {
         <ul>
           {this.props.categoryQuery.allCategories && this.props.categoryQuery.allCategories.map(category => (
             category.items.map(item =>(
-              <li key={item.id}>
-                <Link to={`${match.url}/${item.id}`}>
-                  {item.name}
-                </Link>
-              </li>
+              <ItemListingLink key={item.id} item={item} match={match}/>
             ))
           ))}
         </ul>
@@ -45,6 +42,9 @@ const CATEGORY_QUERY = gql`
       items {
         id
         name
+        images {
+          url
+        }
       }
     }
   }

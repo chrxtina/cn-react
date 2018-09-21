@@ -13,7 +13,7 @@ class NewItem extends Component {
         description: "",
         location: "",
         categoryId: "",
-        imageIds: [],
+        imagesIds: [],
     };
     this.handleInputChange = this.handleInputChange.bind(this);
   }
@@ -39,9 +39,8 @@ class NewItem extends Component {
     }).then(image => {
 
       this.setState({
-        imageIds: [...this.state.imageIds, image.id]
+        imagesIds: [...this.state.imagesIds, image.id]
       });
-      console.log(this.state);
     });
   }
 
@@ -113,11 +112,11 @@ class NewItem extends Component {
       return
     }
 
-    const {name, description, location, categoryId, imageIds} = this.state;
+    const {name, description, location, categoryId, imagesIds} = this.state;
     const ownerId = this.props.loggedInUserQuery.loggedInUser.id;
 
     await this.props.createItemMutation({
-      variables: {name, description, location, categoryId, ownerId, imageIds},
+      variables: {name, description, location, categoryId, ownerId, imagesIds},
       refetchQueries: [
         {
           query: gql`
@@ -133,7 +132,7 @@ class NewItem extends Component {
                     id
                     name
                   }
-                  image {
+                  images {
                     url
                   }
                 }
@@ -172,8 +171,8 @@ const ALL_CATEGORIES_QUERY = gql`
 `;
 
 const CREATE_ITEM_MUTATION = gql`
-  mutation CreateItemMutation($name: String!, $description: String!, $location: String!, $categoryId: ID!, $ownerId: ID!, $imageIds: [ID!]) {
-    createItem(name: $name, description: $description, location: $location, categoryId: $categoryId, ownerId: $ownerId, imageIds: $imageIds) {
+  mutation CreateItemMutation($name: String!, $description: String!, $location: String!, $categoryId: ID!, $ownerId: ID!, $imagesIds: [ID!]) {
+    createItem(name: $name, description: $description, location: $location, categoryId: $categoryId, ownerId: $ownerId, imagesIds: $imagesIds) {
       id
       name
       description

@@ -21,6 +21,11 @@ class ItemDetails extends Component {
           {Item.name}
         </div>
         <div>
+          {Item.images.map( image => (
+            <img src={image.url} key={image.id} alt={Item.name} height="250" width="250"/>
+          ))}
+        </div>
+        <div>
           {Item.description}
         </div>
         <div>
@@ -38,6 +43,10 @@ const ITEM_QUERY = gql`
       name
       description
       location
+      images {
+        id
+        url
+      }
     }
   }
 `;
