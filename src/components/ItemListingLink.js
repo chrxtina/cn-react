@@ -6,7 +6,6 @@ class ItemListingLink extends Component {
   render () {
 
     if (this.props.item.images.length > 0 ) {
-      console.log("Array has objects")
       return (
         <li>
           <img src={this.props.item.images[0].url} alt={this.props.item.name} height="50" width="50"/>
@@ -16,7 +15,6 @@ class ItemListingLink extends Component {
         </li>
       )
     } else {
-      console.log("Array has NO OBJECTS")
       return (
         <li>
           <Link to={`${this.props.match.url}/${this.props.item.id}`}>
