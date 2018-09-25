@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
+import { Map, TileLayer, Marker } from 'react-leaflet';
 
 class ItemDetails extends Component {
+
   render() {
 
     if (this.props.itemQuery.loading) {
@@ -14,6 +16,13 @@ class ItemDetails extends Component {
     }
 
     const { Item } = this.props.itemQuery;
+    let position;
+
+    if (Item.lat && Item.lng !== "") {
+      position = [Item.lat, Item.lng];
+    } else {
+      position = [0, 0];
+    }
 
     return (
       <div>
@@ -31,6 +40,16 @@ class ItemDetails extends Component {
         <div>
           {Item.location}
         </div>
+        <div id="mapid">
+          <Map center={position} zoom="15">
+            <TileLayer
+              attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker position={position}>
+            </Marker>
+          </Map>
+        </div>
       </div>
     );
   }
@@ -43,6 +62,8 @@ const ITEM_QUERY = gql`
       name
       description
       location
+      lat
+      lng
       images {
         id
         url

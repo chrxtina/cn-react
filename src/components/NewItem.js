@@ -3,6 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import Dropzone from "react-dropzone";
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
 
 class NewItem extends Component {
 
@@ -12,6 +13,8 @@ class NewItem extends Component {
         name: "",
         description: "",
         location: "",
+        lat: "",
+        lng: "",
         categoryId: "",
         imagesIds: [],
     };
@@ -112,11 +115,17 @@ class NewItem extends Component {
       return
     }
 
-    const {name, description, location, categoryId, imagesIds} = this.state;
-    const ownerId = this.props.loggedInUserQuery.loggedInUser.id;
+    const provider = new OpenStreetMapProvider();
+    await provider.search({ query: this.state.location })
+      .then((result) => this.setState({
+        lat: result[0].y,
+        lng: result[0].x,
+      }));
 
+    const {name, description, location, categoryId, imagesIds, lat, lng} = this.state;
+    const ownerId = this.props.loggedInUserQuery.loggedInUser.id;
     await this.props.createItemMutation({
-      variables: {name, description, location, categoryId, ownerId, imagesIds},
+      variables: {name, description, location, categoryId, ownerId, imagesIds, lat, lng},
       refetchQueries: [
         {
           query: gql`
@@ -128,6 +137,8 @@ class NewItem extends Component {
                   name
                   description
                   location
+                  lat
+                  lng
                   category {
                     id
                     name
@@ -171,12 +182,14 @@ const ALL_CATEGORIES_QUERY = gql`
 `;
 
 const CREATE_ITEM_MUTATION = gql`
-  mutation CreateItemMutation($name: String!, $description: String!, $location: String!, $categoryId: ID!, $ownerId: ID!, $imagesIds: [ID!]) {
-    createItem(name: $name, description: $description, location: $location, categoryId: $categoryId, ownerId: $ownerId, imagesIds: $imagesIds) {
+  mutation CreateItemMutation($name: String!, $description: String!, $location: String!, $categoryId: ID!, $ownerId: ID!, $imagesIds: [ID!], $lat: String, $lng: String) {
+    createItem(name: $name, description: $description, location: $location, categoryId: $categoryId, ownerId: $ownerId, imagesIds: $imagesIds, lat: $lat, lng: $lng) {
       id
       name
       description
       location
+      lat
+      lng
     }
   }
 `;
