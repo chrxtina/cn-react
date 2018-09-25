@@ -110,6 +110,9 @@ class MyItem extends Component {
 
     const {id, name, description, location, categoryId, lat, lng} = this.state;
     await this.props.updateItemMutation({variables: {id, name, description, location, categoryId, lat, lng}});
+    this.setState({
+      isEditActive: false,
+    });
   }
 
   handleDelete = () => {
