@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
+import { OpenStreetMapProvider } from 'leaflet-geosearch';
 
 class MyItem extends Component {
   constructor (props) {
@@ -12,6 +13,8 @@ class MyItem extends Component {
       name: this.props.item.name,
       description: this.props.item.description,
       location: this.props.item.location,
+      lat: this.props.item.lat,
+      lng: this.props.item.lng,
       categoryId: this.props.item.category.id
     };
 
@@ -28,6 +31,8 @@ class MyItem extends Component {
         name: this.props.item.name,
         description: this.props.item.description,
         location: this.props.item.location,
+        lat: this.props.item.lat,
+        lng: this.props.item.lng,
         categoryId: this.props.item.category.id
       }));
     }
@@ -95,9 +100,16 @@ class MyItem extends Component {
 
   handleSubmit = async (event) => {
     event.preventDefault();
-    const {id, name, description, location, categoryId} = this.state;
 
-    await this.props.updateItemMutation({variables: {id, name, description, location, categoryId}});
+    const provider = new OpenStreetMapProvider();
+    await provider.search({ query: this.state.location })
+      .then((result) => this.setState({
+        lat: result[0].y,
+        lng: result[0].x,
+      }));
+
+    const {id, name, description, location, categoryId, lat, lng} = this.state;
+    await this.props.updateItemMutation({variables: {id, name, description, location, categoryId, lat, lng}});
   }
 
   handleDelete = () => {
@@ -109,12 +121,14 @@ class MyItem extends Component {
 }
 
 const UPDATE_ITEM_MUTATION = gql`
-  mutation UpdateItemMutation($id: ID!, $name: String!, $description: String!, $location: String!, $categoryId: ID!) {
-    updateItem(id: $id, name: $name, description: $description, location: $location, categoryId: $categoryId) {
+  mutation UpdateItemMutation($id: ID!, $name: String!, $description: String!, $location: String!, $categoryId: ID!, $lat: String, $lng: String) {
+    updateItem(id: $id, name: $name, description: $description, location: $location, categoryId: $categoryId, lat: $lat, lng: $lng) {
       id
       name
       description
       location
+      lat
+      lng
     }
   }
 `;
