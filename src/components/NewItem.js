@@ -17,6 +17,7 @@ class NewItem extends Component {
         lng: "",
         categoryId: "",
         imagesIds: [],
+        imagesUrls: [],
     };
     this.handleInputChange = this.handleInputChange.bind(this);
   }
@@ -40,9 +41,9 @@ class NewItem extends Component {
     }).then(response => {
       return response.json()
     }).then(image => {
-
       this.setState({
-        imagesIds: [...this.state.imagesIds, image.id]
+        imagesIds: [...this.state.imagesIds, image.id],
+        imagesUrls: [...this.state.imagesUrls, image.url]
       });
     });
   }
@@ -101,6 +102,15 @@ class NewItem extends Component {
           >
               <div>Drop an image or click to select</div>
           </Dropzone>
+
+          {this.state.imagesUrls.length > 0 ?
+            <div>
+              {this.state.imagesUrls.map((image) =>
+                <img src={image} key={image} alt="Preview" height="100" width="75"/>
+              )}
+            </div>
+            : null}
+
           <input type="submit" value="Submit" />
         </form>
       </div>
