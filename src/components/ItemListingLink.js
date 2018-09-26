@@ -8,7 +8,7 @@ class ItemListingLink extends Component {
     if (this.props.item.images.length > 0 ) {
       return (
         <li>
-          <img src={this.props.item.images[0].url} alt={this.props.item.name} height="50" width="50"/>
+          <img src={this.props.item.images[0].url} alt={this.props.item.name} className="item-thumbnail"/>
           <Link to={`${this.props.match.url}/${this.props.item.id}`}>
             {this.props.item.name}
           </Link>

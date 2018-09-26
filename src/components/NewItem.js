@@ -106,7 +106,7 @@ class NewItem extends Component {
           {this.state.imagesUrls.length > 0 ?
             <div>
               {this.state.imagesUrls.map((image) =>
-                <img src={image} key={image} alt="Preview" height="100" width="75"/>
+                <img src={image} key={image} alt="Preview" className="item-preview"/>
               )}
             </div>
             : null}

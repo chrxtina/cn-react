@@ -31,7 +31,7 @@ class ItemDetails extends Component {
         </div>
         <div>
           {Item.images.map( image => (
-            <img src={image.url} key={image.id} alt={Item.name} height="250" width="250"/>
+            <img src={image.url} key={image.id} alt={Item.name} className="item-detail-img"/>
           ))}
         </div>
         <div>
