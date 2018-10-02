@@ -161,22 +161,22 @@ class NewItem extends Component {
             }
           `,
         },
-      {
-        query: gql`
-          query CategoryQuery($id: ID!) {
-            allCategories(filter: {id: $id} orderBy: name_ASC) {
-              id
-              name
-              items {
+        {
+          query: gql`
+            query CategoryQuery($id: ID!) {
+              allCategories(filter: {id: $id} orderBy: name_ASC) {
                 id
                 name
+                items {
+                  id
+                  name
+                }
               }
             }
-          }
-        `,
-        variables: { id: this.state.categoryId },
-      }
-    ],
+          `,
+          variables: { id: this.state.categoryId },
+        }
+      ],
     });
     this.props.history.replace('/my-items');
   }

@@ -118,7 +118,50 @@ class MyItem extends Component {
   handleDelete = () => {
     const {id} = this.state;
 
-    this.props.deleteItemMutation({variables: {id}})
+    this.props.deleteItemMutation({
+        variables: {id},
+        refetchQueries: [
+          {
+            query: gql`
+              query UserItemsQuery {
+                user {
+                  id
+                  items {
+                    id
+                    name
+                    description
+                    location
+                    lat
+                    lng
+                    category {
+                      id
+                      name
+                    }
+                    images {
+                      url
+                    }
+                  }
+                }
+              }
+            `,
+          },
+          {
+            query: gql`
+              query CategoryQuery($id: ID!) {
+                allCategories(filter: {id: $id} orderBy: name_ASC) {
+                  id
+                  name
+                  items {
+                    id
+                    name
+                  }
+                }
+              }
+            `,
+            variables: { id: this.state.categoryId },
+          }
+        ],
+      })
       .then(this.props.refresh);
   }
 }
