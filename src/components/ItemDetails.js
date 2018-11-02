@@ -2,8 +2,24 @@ import React, { Component } from 'react';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import { Map, TileLayer, Marker } from 'react-leaflet';
+import CountdownTimer from './CountdownTimer';
 
 class ItemDetails extends Component {
+
+  constructor (props) {
+    super(props);
+    this.state = {
+      isExpired: false
+    };
+
+    this.handleExpire = this.handleExpire.bind(this);
+  }
+
+  handleExpire (){
+    this.setState({
+      isExpired: true
+    });
+  }
 
   render() {
 
@@ -38,6 +54,17 @@ class ItemDetails extends Component {
           {Item.description}
         </div>
         <div>
+          Posted on:
+          {Item.createdAt}
+        </div>
+
+        {this.state.isExpired ? (
+          'Item expired'
+        ) : (
+          <CountdownTimer createdAt={Item.createdAt} handleExpire={this.handleExpire} />
+        )}
+
+        <div>
           {Item.location}
         </div>
         <div id="mapid">
@@ -59,6 +86,7 @@ const ITEM_QUERY = gql`
   query ItemQuery($id: ID!) {
     Item(id: $id) {
       id
+      createdAt
       name
       description
       location
