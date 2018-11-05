@@ -18,7 +18,7 @@ class CountdownTimer extends Component {
     );
   }
 
-  componentWillUnMount() {
+  componentWillUnmount() {
     clearInterval(this.timerID);
   }
 
@@ -41,19 +41,24 @@ class CountdownTimer extends Component {
       this.props.handleExpire();
       clearInterval(this.timerID);
     } else {
-      this.setState({
+      this.setState( state => ({
         days: days,
         hours: hours,
         minutes: minutes,
         seconds: seconds
-      });
+      }));
     }
   }
 
   render () {
     return (
       <div>
-        Time left: {this.state.days + "d " + this.state.hours + "h " + this.state.minutes + "m " + this.state.seconds + "s "}
+        Time left: {
+          this.state.days + "d " +
+          this.state.hours + "h " +
+          this.state.minutes + "m " +
+          this.state.seconds + "s "
+        }
       </div>
     )
   }

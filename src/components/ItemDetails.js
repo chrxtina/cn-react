@@ -16,9 +16,9 @@ class ItemDetails extends Component {
   }
 
   handleExpire (){
-    this.setState({
+    this.setState( state => ({
       isExpired: true
-    });
+    }));
   }
 
   render() {
