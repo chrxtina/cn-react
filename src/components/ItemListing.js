@@ -39,7 +39,6 @@ const ITEMS_QUERY = gql`
         name: $name
       },
       isExpired: false,
-
     },
     orderBy: createdAt_ASC
   ) {

@@ -163,13 +163,19 @@ class NewItem extends Component {
         },
         {
           query: gql`
-            query CategoryQuery($id: ID!) {
-              allCategories(filter: {id: $id} orderBy: name_ASC) {
+            query ItemsQuery($id: ID!) {
+              allItems(filter: {
+                category: {
+                  id: $id
+                },
+                isExpired: false,
+              },
+              orderBy: createdAt_ASC
+            ) {
                 id
                 name
-                items {
-                  id
-                  name
+                images {
+                  url
                 }
               }
             }
