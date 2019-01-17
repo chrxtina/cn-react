@@ -33,10 +33,10 @@ class ItemListing extends Component {
 }
 
 const ITEMS_QUERY = gql`
-  query ItemsQuery($name: String!) {
+  query ItemsQuery($id: ID!) {
     allItems(filter: {
       category: {
-        name: $name
+        id: $id
       },
       isExpired: false,
     },
@@ -53,9 +53,9 @@ const ITEMS_QUERY = gql`
 
 const ItemListingWithGraphQL = graphql(ITEMS_QUERY, {
   name: 'itemsQuery',
-  options: ({match}) => ({
+  options: (props) => ({
     variables: {
-      name: match.params.category,
+      id: props.location.state.categoryId
     }
   }),
 })(ItemListing);
