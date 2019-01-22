@@ -55,7 +55,7 @@ const ItemListingWithGraphQL = graphql(ITEMS_QUERY, {
   name: 'itemsQuery',
   options: (props) => ({
     variables: {
-      id: props.location.state.categoryId
+       id: props.match.params.categoryId
     }
   }),
 })(ItemListing);

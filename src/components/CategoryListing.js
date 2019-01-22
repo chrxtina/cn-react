@@ -13,13 +13,13 @@ class CategoryListing extends React.Component {
         <ul>
           {this.props.allCategoriesQuery.allCategories && this.props.allCategoriesQuery.allCategories.map(category => (
             <li key={category.id}>
-              <Link to={{ pathname: `${match.url}/${category.name}`, state: { categoryId: category.id} }}>
+              <Link to={`${match.url}/${category.name}/${category.id}`}>
                 {category.name}
               </Link>
             </li>
           ))}
         </ul>
-        <Route path={`${match.url}/:category`}
+        <Route path={`${match.url}/:category/:categoryId`}
           render={ (props) => <ItemListing {...props} />} />
       </div>
     )
