@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
+import { AuthProvider, AuthConsumer } from '../context/Auth';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import App from './App';
@@ -33,27 +34,41 @@ class Router extends Component {
     return (
       <div>
         <BrowserRouter>
-          <div>
-            <nav className="nav-bar">
-              <ul className="nav">
-                <li><Link to="/">Home</Link></li>
-                <li><Link to="/category">Categories</Link></li>
-                { menuItems }
-              </ul>
-            </nav>
-            <Switch>
-              <Route exact path="/" component={App} />
-              <Route path="/category" component={CategoryListing}/>
-              <Route path="/new-item" component={NewItem}/>
-              <Route path='/my-items' component={MyItemsListing} />
-              <Route path='/signup' component={CreateUser} />
-              <Route path='/login' component={LoginUser} />
-              <Route component={NotFound}/>
-            </Switch>
-          </div>
+          <AuthProvider>
+            <div>
+              <header>
+                <AuthConsumer>
+                  { ({isAuth, logout}) => (
+                    <div>
+                      { isAuth ? (
+                        <LoggedInMenu logout={logout}/>
+                      ):(
+                        <LoggedOutMenu/>
+                      )}
+                    </div> 
+                  )}
+                </AuthConsumer>
+              </header>
+              <nav className="nav-bar">
+                <ul className="nav">
+                  <li><Link to="/">Home</Link></li>
+                  <li><Link to="/category">Categories</Link></li>
+                  { menuItems }
+                </ul>
+              </nav>
+              <Switch>
+                <Route exact path="/" component={App} />
+                <Route path="/category" component={CategoryListing}/>
+                <Route path="/new-item" component={NewItem}/>
+                <Route path='/my-items' component={MyItemsListing} />
+                <Route path='/signup' component={CreateUser} />
+                <Route path='/login' component={LoginUser} />
+                <Route component={NotFound}/>
+              </Switch>
+            </div>
+          </AuthProvider>
         </BrowserRouter>
       </div>
-
     )
   }
 }
