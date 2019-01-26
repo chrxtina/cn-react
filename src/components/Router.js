@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import { AuthProvider, AuthConsumer } from '../context/Auth';
-import { graphql, compose } from 'react-apollo';
-import gql from 'graphql-tag';
 import App from './App';
 import CategoryListing from './CategoryListing';
 import NewItem from './NewItem';
@@ -15,22 +13,7 @@ import LoggedOutMenu from './LoggedOutMenu';
 
 class Router extends Component {
 
-  _isLoggedIn = () => {
-    return this.props.loggedInUserQuery.loggedInUser && this.props.loggedInUserQuery.loggedInUser.id !== null
-  }
-
   render () {
-    if (this.props.loggedInUserQuery.loading) {
-      return (<div>Loading</div>)
-    }
-
-    let menuItems;
-    if (this._isLoggedIn()) {
-      menuItems = <LoggedInMenu />;
-    } else {
-      menuItems = <LoggedOutMenu />;
-    }
-
     return (
       <div>
         <BrowserRouter>
@@ -45,7 +28,7 @@ class Router extends Component {
                       ):(
                         <LoggedOutMenu/>
                       )}
-                    </div> 
+                    </div>
                   )}
                 </AuthConsumer>
               </header>
@@ -53,7 +36,6 @@ class Router extends Component {
                 <ul className="nav">
                   <li><Link to="/">Home</Link></li>
                   <li><Link to="/category">Categories</Link></li>
-                  { menuItems }
                 </ul>
               </nav>
               <Switch>
@@ -73,21 +55,4 @@ class Router extends Component {
   }
 }
 
-const LOGGED_IN_USER_QUERY = gql`
-  query LoggedInUserQuery {
-    loggedInUser {
-      id
-    }
-  }
-`;
-
-const RouterWithQuery = compose(
-  graphql(LOGGED_IN_USER_QUERY, {
-    name: 'loggedInUserQuery',
-    options: {
-      fetchPolicy: 'network-only'
-    }
-  })
-)(Router);
-
-export default RouterWithQuery;
+export default Router;

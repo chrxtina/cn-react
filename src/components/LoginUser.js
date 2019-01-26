@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
+import { AuthConsumer } from '../context/Auth';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
+import LoginButton from './LoginButton';
 
 class CreateLogin extends Component {
 
@@ -39,28 +41,15 @@ class CreateLogin extends Component {
           />
         </label>
 
-        <button onClick={this.authenticateUser}>Log in</button>
+        <AuthConsumer>
+          {({login}) => (
+            <LoginButton {...this.props} email={this.state.email} password={this.state.password} login={login}/>
+          )}
+        </AuthConsumer>
       </div>
     )
   }
-
-  authenticateUser = async () => {
-    const {email, password} = this.state;
-
-    const response = await this.props.authenticateUserMutation({variables: {email, password}});
-    localStorage.setItem('graphcoolToken', response.data.authenticateUser.token);
-    this.props.history.replace('/');
-    window.location.reload();
-  }
 }
-
-const AUTHENTICATE_USER_MUTATION = gql`
-  mutation AuthenticateUserMutation ($email: String!, $password: String!) {
-    authenticateUser(email: $email, password: $password) {
-      token
-    }
-  }
-`;
 
 const LOGGED_IN_USER_QUERY = gql`
   query LoggedInUserQuery {
@@ -71,7 +60,6 @@ const LOGGED_IN_USER_QUERY = gql`
 `;
 
 export default compose(
-  graphql(AUTHENTICATE_USER_MUTATION, {name: 'authenticateUserMutation'}),
   graphql(LOGGED_IN_USER_QUERY, {
     name: 'loggedInUserQuery',
     options: { fetchPolicy: 'network-only' }

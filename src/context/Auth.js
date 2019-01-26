@@ -3,7 +3,10 @@ import React from 'react';
 const AuthContext = React.createContext();
 
 class AuthProvider extends React.Component {
-  state = { isAuth: false };
+
+  state = {
+    isAuth: JSON.parse(localStorage.getItem('isAuth'))
+  };
 
   constructor() {
     super();
@@ -11,22 +14,26 @@ class AuthProvider extends React.Component {
     this.logout = this.logout.bind(this);
   }
 
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.isAuth !== prevState.isAuth) {
+      localStorage.setItem('isAuth', this.state.isAuth);
+    }
+  }
+
   login() {
-    setTimeout(() => this.setState({ isAuth: true }), 1000) 
+    this.setState({ isAuth: true });
   }
 
   logout() {
-    // remove token from local storage and reload page to reset apollo client
-    localStorage.removeItem('graphcoolToken');
+    localStorage.removeItem('graphcoolToken', 'isAuth');
     window.location.reload();
-
-    this.setState({ isAuth: false});
+    this.setState({ isAuth: false });
   }
 
   render() {
     return (
       <AuthContext.Provider
-        value={{ 
+        value={{
           isAuth: this.state.isAuth,
           login: this.login,
           logout: this.logout
@@ -40,4 +47,4 @@ class AuthProvider extends React.Component {
 
 const AuthConsumer = AuthContext.Consumer;
 
-export { AuthProvider, AuthConsumer }
+export { AuthProvider, AuthConsumer };
