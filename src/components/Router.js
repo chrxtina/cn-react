@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import { AuthProvider, AuthConsumer } from '../context/Auth';
 import App from './App';
+import ProtectedRoute from './ProtectedRoute';
 import CategoryListing from './CategoryListing';
 import NewItem from './NewItem';
 import MyItemsListing from './MyItemsListing';
@@ -41,8 +42,8 @@ class Router extends Component {
               <Switch>
                 <Route exact path="/" component={App} />
                 <Route path="/category" component={CategoryListing}/>
-                <Route path="/new-item" component={NewItem}/>
-                <Route path='/my-items' component={MyItemsListing} />
+                <ProtectedRoute path="/new-item" component={NewItem}/>
+                <ProtectedRoute path='/my-items' component={MyItemsListing} />
                 <Route path='/signup' component={CreateUser} />
                 <Route path='/login' component={LoginUser} />
                 <Route component={NotFound}/>
