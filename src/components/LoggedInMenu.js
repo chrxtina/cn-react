@@ -8,6 +8,7 @@ class LoggedInMenu extends Component {
       <div>
           <li><Link to="/new-item">Post Item</Link></li>
           <li><Link to="/my-items">My Items</Link></li>
+          <li><Link to="/messages">Messages</Link></li>
           <li onClick={this.props.logout}>Logout</li>
       </div>
     )
