@@ -220,10 +220,7 @@ const LOGGED_IN_USER_QUERY = gql`
 
 const NewItemWithMutation = compose(
   graphql(ALL_CATEGORIES_QUERY, {
-    name: 'allCategoriesQuery',
-    options: {
-      fetchPolicy: 'network-only',
-    },
+    name: 'allCategoriesQuery'
   }),
   graphql(CREATE_ITEM_MUTATION, {
     name: 'createItemMutation'

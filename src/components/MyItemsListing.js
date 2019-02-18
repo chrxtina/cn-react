@@ -17,7 +17,7 @@ class MyItemsListing extends Component {
     if (currentUser === undefined) {
       return (<div>You are not logged in</div>)
     }
-    
+
     return (
       <div>
         <ul>

@@ -22,3 +22,7 @@ body {
   max-height: 100px;
   margin: .5rem;
 }
+
+.align-right {
+  text-align: right;
+}
