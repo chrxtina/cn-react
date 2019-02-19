@@ -58,12 +58,10 @@ class NewMessage extends Component {
     const {text, conversationId} = this.state;
     const ownerId = this.props.loggedInUserQuery.loggedInUser.id;
     await this.props.createMessageMutation({
-      variables: {text, conversationId, ownerId},
-      refetchQueries: [
-        {
-
-        }
-      ],
+      variables: {text, conversationId, ownerId}
+    });
+    this.setState({
+      text: ""
     });
   }
 }

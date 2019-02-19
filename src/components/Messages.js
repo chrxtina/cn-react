@@ -7,6 +7,37 @@ import NewMessage from './NewMessage';
 
 
 class Messages extends Component {
+
+  componentDidMount() {
+    this.createMessageSubscription = this.props.messagesQuery.subscribeToMore({
+      document: gql`
+        subscription {
+          Message(filter: {
+              mutation_in: [CREATED]
+          }) {
+            node {
+              id
+              text
+              createdAt
+              owner {
+                id
+                name
+              }
+            }
+          }
+        }
+      `,
+      updateQuery: (previousState, {subscriptionData}) => {
+        const newMessage = subscriptionData.data.Message.node;
+        const messages = previousState.allMessages.concat([newMessage]);
+        return {
+          allMessages: messages
+        }
+      },
+      onError: (err) => console.error(err),
+    })
+  }
+
   render() {
 
     if (this.props.messagesQuery.loading) {

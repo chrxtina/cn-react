@@ -7,7 +7,7 @@ import Messages from './Messages';
 class Conversations extends React.Component {
 
   render () {
-    if (this.props.loggedInUserQuery.loading) {
+    if (this.props.loggedInUserQuery.loading || this.props.userConversationsQuery.loading) {
       return (<div>Loading</div>)
     }
 
