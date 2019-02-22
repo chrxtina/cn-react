@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "apollo-cache-inmemory": "^1.2.8",
-    "apollo-client": "^2.4.1",
+    "apollo-cache-inmemory": "^1.4.3",
+    "apollo-client": "^2.4.13",
     "apollo-link": "^1.2.2",
     "apollo-link-http": "^1.5.4",
     "apollo-link-ws": "^1.0.14",
