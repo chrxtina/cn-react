@@ -1,7 +1,9 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { graphql, compose } from 'react-apollo';
+import { AuthConsumer } from '../context/Auth';
+import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import SignupButton from './SignupButton';
 
 class CreateUser extends React.Component {
 
@@ -52,34 +54,15 @@ class CreateUser extends React.Component {
           />
         </label>
 
-        <button onClick={this.signupUser}>Sign up</button>
+        <AuthConsumer>
+          {({login}) => (
+            <SignupButton {...this.props} name={this.state.name} email={this.state.email} password={this.state.password} login={login}/>
+          )}
+        </AuthConsumer>
       </div>
     )
   }
-
-  signupUser = async () => {
-    const { email, password, name } = this.state;
-
-    try {
-      const user = await this.props.signupUserMutation({variables: {email, password, name}});
-      localStorage.setItem('graphcoolToken', user.data.signupUser.token);
-      this.props.history.replace('/');
-      window.location.reload();
-    } catch (e) {
-      console.error(`An error occured: `, e);
-      this.props.history.replace('/');
-    }
-  }
 }
-
-const SIGNUP_USER_MUTATION = gql`
-  mutation SignupUserMutation ($email: String!, $password: String!, $name: String) {
-    signupUser(email: $email, password: $password, name: $name) {
-      id
-      token
-    }
-  }
-`;
 
 const LOGGED_IN_USER_QUERY = gql`
   query LoggedInUserQuery {
@@ -89,10 +72,7 @@ const LOGGED_IN_USER_QUERY = gql`
   }
 `;
 
-export default compose(
-  graphql(SIGNUP_USER_MUTATION, {name: 'signupUserMutation'}),
-  graphql(LOGGED_IN_USER_QUERY, {
-    name: 'loggedInUserQuery',
-    options: { fetchPolicy: 'network-only' }
-  })
-)(withRouter(CreateUser));
+export default graphql(LOGGED_IN_USER_QUERY, {
+  name: 'loggedInUserQuery',
+  options: { fetchPolicy: 'network-only' }
+})(withRouter(CreateUser));

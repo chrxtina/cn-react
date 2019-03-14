@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { AuthConsumer } from '../context/Auth';
-import { graphql, compose } from 'react-apollo';
+import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
 import LoginButton from './LoginButton';
 
@@ -59,9 +59,7 @@ const LOGGED_IN_USER_QUERY = gql`
   }
 `;
 
-export default compose(
-  graphql(LOGGED_IN_USER_QUERY, {
-    name: 'loggedInUserQuery',
-    options: { fetchPolicy: 'network-only' }
-  })
-)(withRouter(CreateLogin));
+export default graphql(LOGGED_IN_USER_QUERY, {
+  name: 'loggedInUserQuery',
+  options: { fetchPolicy: 'network-only' }
+})(withRouter(CreateLogin));
