@@ -6,6 +6,7 @@ import ProtectedRoute from './ProtectedRoute';
 import CategoryListing from './CategoryListing';
 import NewItem from './NewItem';
 import MyItemsListing from './MyItemsListing';
+import WonItemsListing from './WonItemsListing';
 import Conversations from './Conversations';
 import LoginUser from './LoginUser';
 import CreateUser from './CreateUser';
@@ -45,6 +46,7 @@ class Router extends Component {
                 <Route path="/category" component={CategoryListing}/>
                 <ProtectedRoute path="/new-item" component={NewItem}/>
                 <ProtectedRoute path="/my-items" component={MyItemsListing} />
+                <ProtectedRoute path="/won-items" component={WonItemsListing} />
                 <ProtectedRoute path="/messages" component={Conversations} />
                 <Route path="/signup" component={CreateUser} />
                 <Route path="/login" component={LoginUser} />
