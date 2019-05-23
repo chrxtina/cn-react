@@ -4,6 +4,7 @@ import { graphql, compose } from 'react-apollo';
 import { Map, TileLayer, Marker } from 'react-leaflet';
 import CountdownTimer from './CountdownTimer';
 import ItemContact from './ItemContact';
+import ItemInterestButton from './ItemInterestButton';
 
 class ItemDetails extends Component {
 
@@ -12,33 +13,26 @@ class ItemDetails extends Component {
     this.state = {
       isExpired: false,
       currentUser: "",
-      owner: "",
-      winner: ""
+      interestBtnOff: false
     };
 
     this.handleExpire = this.handleExpire.bind(this);
+    this.disableInterestBtn = this.disableInterestBtn.bind(this);
   }
 
-  componentDidUpdate(prevProps) {
+  componentDidUpdate(prevProps, prevState) {
     if (this.props.loggedInUserQuery !== prevProps.loggedInUserQuery &&
       this.props.loggedInUserQuery.loading === false) {
       this.setState({
         currentUser: this.props.loggedInUserQuery.loggedInUser.id
       });
     }
+  }
 
-    if (this.props.itemQuery !== prevProps.itemQuery &&
-      this.props.itemQuery.loading === false) {
-      this.setState({
-        owner: this.props.itemQuery.Item.owner.id,
-      });
-
-      if (this.props.itemQuery.Item.winner !== null ) {
-        this.setState({
-          winner: this.props.itemQuery.Item.winner.id
-        });
-      }
-    }
+  disableInterestBtn() {
+    this.setState({
+      interestBtnOff: true
+    });
   }
 
   handleExpire() {
@@ -93,6 +87,38 @@ class ItemDetails extends Component {
         <div>
           {Item.location}
         </div>
+        {
+          this.state.currentUser !== null && ((
+            Item.owner.id === this.state.currentUser ||
+            Item.isExpired === true ||
+            Item.interests.find(interest => {return interest.owner.id === this.state.currentUser}) ||
+            this.state.interestBtnOff === true
+          ) ? (
+              <ItemInterestButton
+                disabled={true}
+                currentUser={this.state.currentUser}
+                itemId={Item.id}
+              >
+                Interested!
+              </ItemInterestButton>
+            ) : (
+              <ItemInterestButton
+                disabled={false}
+                currentUser={this.state.currentUser}
+                itemId={Item.id}
+                disableInterestBtn={this.disableInterestBtn}
+              >
+                Interested!
+              </ItemInterestButton>
+            )
+          )
+        }
+        {
+          this.state.currentUser === null &&
+          this.state.isExpire !== false && (
+            <div>You're logged out. Log in for a chance to win this item!</div>
+          )
+        }
         <div id="mapid">
           <Map center={position} zoom="15">
             <TileLayer
@@ -104,9 +130,16 @@ class ItemDetails extends Component {
           </Map>
         </div>
         {
-           Item.isExpired && (this.state.currentUser === this.state.owner || this.state.currentUser === this.state.winner) ? (
-             <ItemContact currentUser={this.state.currentUser} owner={this.state.owner} winner={this.state.winner} />
-           ) : null
+           Item.isExpired && (
+             this.state.currentUser === Item.owner ||
+             this.state.currentUser === Item.winner
+           ) && (
+             <ItemContact
+              currentUser={this.state.currentUser}
+              owner={Item.owner}
+              winner={Item.winner}
+            />
+           )
         }
       </div>
     );
@@ -133,6 +166,11 @@ const ITEM_QUERY = gql`
       }
       winner {
         id
+      }
+      interests {
+        owner {
+          id
+        }
       }
     }
   }
