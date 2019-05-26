@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { withRouter } from 'react-router-dom';
+import { Link, withRouter } from 'react-router-dom';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
@@ -50,7 +50,9 @@ class MyItem extends Component {
     if (!this.state.isEditActive) {
       return (
         <li>
-          {this.props.item.name}
+          <Link to={`category/${this.props.item.category.name}/${this.props.item.category.id}/${this.props.item.id}`}>
+            {this.props.item.name}
+          </Link>
           <div>
             <button onClick={this.toggleEdit}>Edit</button>
             <button onClick={this.handleDelete}>Delete</button>
