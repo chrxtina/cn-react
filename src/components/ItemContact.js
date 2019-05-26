@@ -53,16 +53,10 @@ class ItemContact extends Component {
       <>
         {
           currentUser === owner  &&  (
-            winner !== "" ? (
-              <div>
-                <div>A winner has been chosen</div>
-                <button onClick={this.handleSendMessage}> Message Winner </button>
-              </div>
-            ) : (
-              <div>
-                <div>Item expired with no winner, repost your item</div>
-              </div>
-            )
+            <div>
+              <div>A winner has been chosen</div>
+              <button onClick={this.handleSendMessage}> Message Winner </button>
+            </div>
           )
         }
 

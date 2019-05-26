@@ -12,7 +12,7 @@ class ItemDetails extends Component {
     super(props);
     this.state = {
       isExpired: false,
-      currentUser: "",
+      currentUserId: "",
       interestBtnOff: false
     };
 
@@ -24,7 +24,7 @@ class ItemDetails extends Component {
     if (this.props.loggedInUserQuery !== prevProps.loggedInUserQuery &&
       this.props.loggedInUserQuery.loading === false) {
       this.setState({
-        currentUser: this.props.loggedInUserQuery.loggedInUser.id
+        currentUserId: this.props.loggedInUserQuery.loggedInUser.id
       });
     }
   }
@@ -52,6 +52,7 @@ class ItemDetails extends Component {
     }
 
     const { Item } = this.props.itemQuery;
+
     let position;
 
     if (Item.lat && Item.lng !== "") {
@@ -88,15 +89,15 @@ class ItemDetails extends Component {
           {Item.location}
         </div>
         {
-          this.state.currentUser !== null && ((
-            Item.owner.id === this.state.currentUser ||
+          this.state.currentUserId !== null && ((
+            Item.owner.id === this.state.currentUserId ||
             Item.isExpired === true ||
-            Item.interests.find(interest => {return interest.owner.id === this.state.currentUser}) ||
+            Item.interests.find(interest => {return interest.owner.id === this.state.currentUserId}) ||
             this.state.interestBtnOff === true
           ) ? (
               <ItemInterestButton
                 disabled={true}
-                currentUser={this.state.currentUser}
+                currentUserId={this.state.currentUserId}
                 itemId={Item.id}
               >
                 Interested!
@@ -104,7 +105,7 @@ class ItemDetails extends Component {
             ) : (
               <ItemInterestButton
                 disabled={false}
-                currentUser={this.state.currentUser}
+                currentUserId={this.state.currentUserId}
                 itemId={Item.id}
                 disableInterestBtn={this.disableInterestBtn}
               >
@@ -114,7 +115,7 @@ class ItemDetails extends Component {
           )
         }
         {
-          this.state.currentUser === null &&
+          this.state.currentUserId === null &&
           this.state.isExpire !== false && (
             <div>You're logged out. Log in for a chance to win this item!</div>
           )
@@ -129,17 +130,23 @@ class ItemDetails extends Component {
             </Marker>
           </Map>
         </div>
+
         {
-           Item.isExpired && (
-             this.state.currentUser === Item.owner ||
-             this.state.currentUser === Item.winner
-           ) && (
-             <ItemContact
-              currentUser={this.state.currentUser}
-              owner={Item.owner}
-              winner={Item.winner}
-            />
-           )
+          Item.isExpired && (
+            Item.winner !== null ? (
+              ((this.state.currentUserId === Item.owner.id) || (this.state.currentUserId === Item.winner.id)) && (
+                <ItemContact
+                 currentUser={this.state.currentUserId}
+                 owner={Item.owner.id}
+                 winner={Item.winner.id}
+               />
+              )
+            ) : (
+              (this.state.currentUserId === Item.owner.id) && (
+                <div>Item expired with no winner, repost your item</div>
+              )
+            )
+          )
         }
       </div>
     );
