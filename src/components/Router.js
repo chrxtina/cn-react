@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import { AuthProvider, AuthConsumer } from '../context/Auth';
-import App from './App';
+import Home from './Home';
 import ProtectedRoute from './ProtectedRoute';
 import CategoryListing from './CategoryListing';
 import NewItem from './NewItem';
@@ -42,7 +42,7 @@ class Router extends Component {
                 </ul>
               </nav>
               <Switch>
-                <Route exact path="/" component={App} />
+                <Route exact path="/" component={Home} />
                 <Route path="/category" component={CategoryListing}/>
                 <ProtectedRoute path="/new-item" component={NewItem}/>
                 <ProtectedRoute path="/my-items" component={MyItemsListing} />

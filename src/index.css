@@ -4,10 +4,31 @@ body {
   font-family: sans-serif;
 }
 
-#mapid, .leaflet-container {
+.listing-map {
+  position: relative;
+}
+
+.listing-map > div {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+}
+
+.map-item-listing {
+  left: 0;
+  right: 250px;
+}
+
+.item-listing-map {
+  left: 250px;
+  /* left: 0; */
+  right: 0;
+}
+
+/* #mapid, .leaflet-container {
   height: 400px;
   width: 400px;
-}
+} */
 
 .item-detail-img {
   max-height: 300px;
@@ -16,6 +37,7 @@ body {
 
 .item-thumbnail {
   max-height: 80px;
+  max-width: 100%;
 }
 
 .item-preview {

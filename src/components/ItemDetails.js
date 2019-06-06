@@ -53,13 +53,7 @@ class ItemDetails extends Component {
 
     const { Item } = this.props.itemQuery;
 
-    let position;
-
-    if (Item.lat && Item.lng !== "") {
-      position = [Item.lat, Item.lng];
-    } else {
-      position = [0, 0];
-    }
+    let position= [Item.lat, Item.lng];
 
     return (
       <div>
@@ -121,7 +115,13 @@ class ItemDetails extends Component {
           )
         }
         <div id="mapid">
-          <Map center={position} zoom="15">
+          <Map
+            style={{
+              height: "400px",
+              width: "400px"
+             }}
+            center={position}
+            zoom="15">
             <TileLayer
               attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

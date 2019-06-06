@@ -106,8 +106,8 @@ class MyItem extends Component {
     const provider = new OpenStreetMapProvider();
     await provider.search({ query: this.state.location })
       .then((result) => this.setState({
-        lat: result[0].y,
-        lng: result[0].x,
+        lat: parseFloat(result[0].y),
+        lng: parseFloat(result[0].x),
       }));
 
     const {id, name, description, location, categoryId, lat, lng} = this.state;
@@ -175,7 +175,7 @@ class MyItem extends Component {
 }
 
 const UPDATE_ITEM_MUTATION = gql`
-  mutation UpdateItemMutation($id: ID!, $name: String!, $description: String!, $location: String!, $categoryId: ID!, $lat: String, $lng: String) {
+  mutation UpdateItemMutation($id: ID!, $name: String!, $description: String!, $location: String!, $categoryId: ID!, $lat: Float, $lng: Float) {
     updateItem(id: $id, name: $name, description: $description, location: $location, categoryId: $categoryId, lat: $lat, lng: $lng) {
       id
       name

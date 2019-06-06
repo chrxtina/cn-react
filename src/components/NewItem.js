@@ -13,8 +13,8 @@ class NewItem extends Component {
         name: "",
         description: "",
         location: "",
-        lat: "",
-        lng: "",
+        lat: 0,
+        lng: 0,
         categoryId: "",
         imagesIds: [],
         imagesUrls: [],
@@ -128,8 +128,8 @@ class NewItem extends Component {
     const provider = new OpenStreetMapProvider();
     await provider.search({ query: this.state.location })
       .then((result) => this.setState({
-        lat: result[0].y,
-        lng: result[0].x,
+        lat: parseFloat(result[0].y),
+        lng: parseFloat(result[0].x),
       }));
 
     const {name, description, location, categoryId, imagesIds, lat, lng} = this.state;
@@ -198,7 +198,7 @@ const ALL_CATEGORIES_QUERY = gql`
 `;
 
 const CREATE_ITEM_MUTATION = gql`
-  mutation CreateItemMutation($name: String!, $description: String!, $location: String!, $categoryId: ID!, $ownerId: ID!, $imagesIds: [ID!], $lat: String, $lng: String) {
+  mutation CreateItemMutation($name: String!, $description: String!, $location: String!, $categoryId: ID!, $ownerId: ID!, $imagesIds: [ID!], $lat: Float, $lng: Float) {
     createItem(name: $name, description: $description, location: $location, categoryId: $categoryId, ownerId: $ownerId, imagesIds: $imagesIds, lat: $lat, lng: $lng) {
       id
       name
