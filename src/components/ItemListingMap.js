@@ -29,7 +29,7 @@ class ItemListingMap extends Component {
   render () {
     let position = this.props.position;
     let zoom = "15";
-    let style = { height: "60vh", width: "calc(100vw - 250px)" };
+    let style = { height: "60vh", width: "calc(100vw - 250px)", zIndex:"0" };
 
     return (
       <div id="mapid" className="item-listing-map">

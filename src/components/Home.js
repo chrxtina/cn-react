@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import ItemListingMap from './ItemListingMap';
 import MapItemListing from './MapItemListing';
+import MapItemListingFilter from './MapItemListingFilter';
+import CategorySelect from './CategorySelect';
 
 class Home extends Component {
   constructor (props) {
@@ -14,13 +16,18 @@ class Home extends Component {
       minLng: 0,
       maxLng: 0,
       mapItems: [],
-      markerIdx: -1
+      markerIdx: -1,
+      selectedOption: null,
+      filterCategories: [],
+      applyFilter: false
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.setMapBounds = this.setMapBounds.bind(this);
     this.setMapItemListing = this.setMapItemListing.bind(this);
     this.openPopUp = this.openPopUp.bind(this);
     this.clearMarkerIdx = this.clearMarkerIdx.bind(this);
+    this.setSelectedOption = this.setSelectedOption.bind(this);
+    this.applyFilterTrue = this.applyFilterTrue.bind(this);
   }
 
   handleInputChange(event) {
@@ -75,6 +82,23 @@ class Home extends Component {
     });
   }
 
+  setSelectedOption(filters){
+    this.setState({
+      selectedOption: filters
+    });
+  }
+
+  applyFilterTrue(){
+    let filterCategories = [];
+    this.state.selectedOption !== null && this.state.selectedOption.map(category => {
+      return filterCategories.push(category.value);
+    });
+    this.setState({
+      applyFilter: true,
+      filterCategories: filterCategories
+    });
+  }
+
   render () {
     return (
       <div>
@@ -91,14 +115,30 @@ class Home extends Component {
            <input type="submit" value="Submit" />
          </form>
 
+         <CategorySelect setSelectedOption={this.setSelectedOption}/>
+         <button onClick={this.applyFilterTrue}>Apply Filter</button>
+
         <div className="listing-map">
-          <MapItemListing
-            setMapItemListing={this.setMapItemListing}
-            openPopUp={this.openPopUp}
-            minLat={this.state.minLat}
-            maxLat={this.state.maxLat}
-            minLng={this.state.minLng}
-            maxLng={this.state.maxLng}/>
+          {
+            this.state.filterCategories.length > 0 ? (
+              <MapItemListingFilter
+                setMapItemListing={this.setMapItemListing}
+                openPopUp={this.openPopUp}
+                minLat={this.state.minLat}
+                maxLat={this.state.maxLat}
+                minLng={this.state.minLng}
+                maxLng={this.state.maxLng}
+                filterCategories={this.state.filterCategories}/>
+            ):(
+              <MapItemListing
+                setMapItemListing={this.setMapItemListing}
+                openPopUp={this.openPopUp}
+                minLat={this.state.minLat}
+                maxLat={this.state.maxLat}
+                minLng={this.state.minLng}
+                maxLng={this.state.maxLng}/>
+            )
+          }
 
           <ItemListingMap
             setMapBounds={this.setMapBounds}
