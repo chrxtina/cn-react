@@ -11,6 +11,7 @@ class Home extends Component {
     this.state = {
       location: "",
       position: [42.366560, -71.092700],
+      coordErrorMsg: "",
       minLat: 0,
       maxLat: 0,
       minLng: 0,
@@ -27,7 +28,7 @@ class Home extends Component {
     this.openPopUp = this.openPopUp.bind(this);
     this.clearMarkerIdx = this.clearMarkerIdx.bind(this);
     this.setSelectedOption = this.setSelectedOption.bind(this);
-    this.applyFilterTrue = this.applyFilterTrue.bind(this);
+    this.applyFilter = this.applyFilter.bind(this);
   }
 
   handleInputChange(event) {
@@ -44,12 +45,24 @@ class Home extends Component {
     const provider = new OpenStreetMapProvider();
     await provider.search({ query: this.state.location })
       .then((result) => {
-        let coords = [];
-        console.log(result);
-        coords.push(parseFloat(result[0].y))
-        coords.push(parseFloat(result[0].x))
+        let coordErrorMsg;
+        if (result.length > 0) {
+          let coords = [];
+          coordErrorMsg = "";
+          coords.push(parseFloat(result[0].y))
+          coords.push(parseFloat(result[0].x))
+          this.setState({
+            position: coords,
+            coordErrorMsg: coordErrorMsg
+          });
+        } else {
+          coordErrorMsg = "Location not found. Please enter another address";
+          this.setState({
+            coordErrorMsg: coordErrorMsg
+          });
+        }
         this.setState({
-          position: coords
+          location: ""
         });
       });
   }
@@ -88,7 +101,7 @@ class Home extends Component {
     });
   }
 
-  applyFilterTrue(){
+  applyFilter(){
     let filterCategories = [];
     this.state.selectedOption !== null && this.state.selectedOption.map(category => {
       return filterCategories.push(category.value);
@@ -114,9 +127,10 @@ class Home extends Component {
            </label>
            <input type="submit" value="Submit" />
          </form>
+         <div>{this.state.coordErrorMsg}</div>
 
          <CategorySelect setSelectedOption={this.setSelectedOption}/>
-         <button onClick={this.applyFilterTrue}>Apply Filter</button>
+         <button onClick={this.applyFilter}>Apply Filter</button>
 
         <div className="listing-map">
           {

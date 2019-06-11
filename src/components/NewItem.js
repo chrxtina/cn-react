@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import Dropzone from "react-dropzone";
-import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import NewItemMap from './NewItemMap';
 
 class NewItem extends Component {
 
@@ -12,7 +12,6 @@ class NewItem extends Component {
     this.state = {
         name: "",
         description: "",
-        location: "",
         lat: 0,
         lng: 0,
         categoryId: "",
@@ -20,6 +19,7 @@ class NewItem extends Component {
         imagesUrls: [],
     };
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.setCoords = this.setCoords.bind(this);
   }
 
   handleInputChange(event) {
@@ -28,6 +28,13 @@ class NewItem extends Component {
 
     this.setState({
       [name]: value
+    });
+  }
+
+  setCoords(lat, lng) {
+    this.setState({
+      lat: lat,
+      lng: lng
     });
   }
 
@@ -87,15 +94,12 @@ class NewItem extends Component {
               onChange={this.handleInputChange}
             />
           </label>
-          <label>
-            Location:
-            <input
-              name="location"
-              type="text"
-              value={this.state.location}
-              onChange={this.handleInputChange}
-            />
-          </label>
+          <div>
+            <div>
+              Location
+              <NewItemMap setCoords={this.setCoords}/>
+            </div>
+          </div>
           <label>Upload image</label>
           <Dropzone
             onDrop={this.onDrop}
@@ -124,13 +128,6 @@ class NewItem extends Component {
       console.warn('only logged in users can create new posts');
       return
     }
-
-    const provider = new OpenStreetMapProvider();
-    await provider.search({ query: this.state.location })
-      .then((result) => this.setState({
-        lat: parseFloat(result[0].y),
-        lng: parseFloat(result[0].x),
-      }));
 
     const {name, description, location, categoryId, imagesIds, lat, lng} = this.state;
     const ownerId = this.props.loggedInUserQuery.loggedInUser.id;

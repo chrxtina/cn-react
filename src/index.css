@@ -48,3 +48,12 @@ body {
 .align-right {
   text-align: right;
 }
+
+.new-item label {
+  display: block;
+  margin: 1rem 0;
+}
+
+.leaflet-control-geosearch.bar form input {
+  padding-right: 13px;
+}
