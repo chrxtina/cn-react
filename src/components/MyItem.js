@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import { graphql, compose } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import _ from 'lodash';
 import gql from 'graphql-tag';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
 
@@ -119,9 +120,10 @@ class MyItem extends Component {
 
   handleDelete = () => {
     const {id} = this.state;
+    const toDelete = true;
 
     this.props.deleteItemMutation({
-        variables: {id},
+        variables: {id, toDelete},
         refetchQueries: [
           {
             query: gql`
@@ -132,7 +134,6 @@ class MyItem extends Component {
                     id
                     name
                     description
-                    location
                     lat
                     lng
                     category {
@@ -188,14 +189,14 @@ const UPDATE_ITEM_MUTATION = gql`
 `;
 
 const DELETE_ITEM_MUTATION = gql`
-  mutation DeleteItemMutation($id: ID!) {
-    deleteItem(id: $id) {
+  mutation DeleteItemMutation($id: ID!, $toDelete: Boolean) {
+    updateItem(id: $id, toDelete: $toDelete) {
       id
     }
   }
 `;
 
-const MyItemWithMutation = compose(
+const MyItemWithMutation = _.flowRight(
   graphql(UPDATE_ITEM_MUTATION, {
     name: 'updateItemMutation'
   }),
