@@ -11,8 +11,8 @@ class ItemInterestButton extends Component {
   }
 
   createInterest = async () => {
-    const { currentUser: owner, itemId } = this.props;
-    
+    const { currentUserId: owner, itemId } = this.props;
+
     await this.props.createInterestMutation({variables: {owner, itemId}});
     this.props.disableInterestBtn();
   }
