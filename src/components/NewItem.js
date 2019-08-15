@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { graphql, compose } from 'react-apollo';
+import { graphql} from 'react-apollo';
+import _ from 'lodash';
 import gql from 'graphql-tag';
 import Dropzone from "react-dropzone";
 import NewItemMap from './NewItemMap';
@@ -129,10 +130,10 @@ class NewItem extends Component {
       return
     }
 
-    const {name, description, location, categoryId, imagesIds, lat, lng} = this.state;
+    const {name, description, categoryId, imagesIds, lat, lng} = this.state;
     const ownerId = this.props.loggedInUserQuery.loggedInUser.id;
     await this.props.createItemMutation({
-      variables: {name, description, location, categoryId, ownerId, imagesIds, lat, lng},
+      variables: {name, description, categoryId, ownerId, imagesIds, lat, lng},
       refetchQueries: [
         {
           query: gql`
@@ -143,7 +144,6 @@ class NewItem extends Component {
                   id
                   name
                   description
-                  location
                   lat
                   lng
                   category {
@@ -160,24 +160,38 @@ class NewItem extends Component {
         },
         {
           query: gql`
-            query ItemsQuery($id: ID!) {
-              allItems(filter: {
-                category: {
-                  id: $id
-                },
-                isExpired: false,
-              },
-              orderBy: createdAt_ASC
+            query MapItemsQuery (
+              $minLat: Float!
+              $maxLat: Float!
+              $minLng: Float!
+              $maxLng: Float!
             ) {
+              allItems (filter: {
+                lat_gte: $minLat
+                lat_lte: $maxLat
+                lng_gte: $minLng
+                lng_lte: $maxLng
+              }){
                 id
                 name
+                category {
+                  id
+                  name
+                }
                 images {
                   url
                 }
+                lat
+                lng
               }
             }
           `,
-          variables: { id: this.state.categoryId },
+          variables: {
+            minLat: parseFloat(localStorage.getItem('minLat')),
+            maxLat: parseFloat(localStorage.getItem('maxLat')),
+            minLng: parseFloat(localStorage.getItem('minLng')),
+            maxLng: parseFloat(localStorage.getItem('maxLng'))
+          },
         }
       ],
     });
@@ -195,12 +209,20 @@ const ALL_CATEGORIES_QUERY = gql`
 `;
 
 const CREATE_ITEM_MUTATION = gql`
-  mutation CreateItemMutation($name: String!, $description: String!, $location: String!, $categoryId: ID!, $ownerId: ID!, $imagesIds: [ID!], $lat: Float, $lng: Float) {
-    createItem(name: $name, description: $description, location: $location, categoryId: $categoryId, ownerId: $ownerId, imagesIds: $imagesIds, lat: $lat, lng: $lng) {
+  mutation CreateItemMutation($name: String!, $description: String!, $categoryId: ID!, $ownerId: ID!, $imagesIds: [ID!], $lat: Float, $lng: Float) {
+    createItem(name: $name, description: $description, categoryId: $categoryId, ownerId: $ownerId, imagesIds: $imagesIds, lat: $lat, lng: $lng) {
       id
       name
       description
-      location
+      category {
+        id
+      }
+      owner {
+        id
+      }
+      images {
+        id
+      }
       lat
       lng
     }
@@ -215,7 +237,7 @@ const LOGGED_IN_USER_QUERY = gql`
   }
 `
 
-const NewItemWithMutation = compose(
+const NewItemWithMutation = _.flowRight(
   graphql(ALL_CATEGORIES_QUERY, {
     name: 'allCategoriesQuery'
   }),
