@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import gql from 'graphql-tag';
-import { graphql, compose } from 'react-apollo';
-import { Map, TileLayer, Marker } from 'react-leaflet';
+import { graphql } from 'react-apollo';
+import _ from 'lodash';
+import { Map, TileLayer, Circle } from 'react-leaflet';
 import CountdownTimer from './CountdownTimer';
 import ItemContact from './ItemContact';
 import ItemInterestButton from './ItemInterestButton';
@@ -79,9 +80,6 @@ class ItemDetails extends Component {
           <CountdownTimer createdAt={Item.createdAt} handleExpire={this.handleExpire} />
         )}
 
-        <div>
-          {Item.location}
-        </div>
         {
           this.state.currentUserId !== null && ((
             Item.owner.id === this.state.currentUserId ||
@@ -121,13 +119,14 @@ class ItemDetails extends Component {
               width: "400px"
              }}
             center={position}
-            zoom="15">
+            zoom="15"
+            maxZoom="16">
             <TileLayer
               attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Marker position={position}>
-            </Marker>
+            <Circle center={position} radius={300}>
+            </Circle>
           </Map>
         </div>
 
@@ -160,7 +159,6 @@ const ITEM_QUERY = gql`
       createdAt
       name
       description
-      location
       lat
       lng
       images {
@@ -191,7 +189,7 @@ const LOGGED_IN_USER_QUERY = gql`
   }
 `;
 
-export default compose(
+export default _.flowRight(
   graphql(ITEM_QUERY, {
     name: 'itemQuery',
     options: ({match}) => ({
