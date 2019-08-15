@@ -31,6 +31,16 @@ class Home extends Component {
     this.applyFilter = this.applyFilter.bind(this);
   }
 
+  componentDidMount() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position)=> {
+        this.setState({
+          position: [position.coords.latitude, position.coords.longitude]
+        });
+      });
+    }
+  }
+
   handleInputChange(event) {
     const value = event.target.value;
     const name = event.target.name;
@@ -68,6 +78,17 @@ class Home extends Component {
   }
 
   setMapBounds(mapBounds) {
+    let bounds = {
+      minLat: mapBounds._southWest.lat,
+      maxLat: mapBounds._northEast.lat,
+      minLng: mapBounds._southWest.lng,
+      maxLng: mapBounds._northEast.lng
+    };
+
+    for (var key in bounds) {
+      localStorage.setItem(key, bounds[key]);
+    }
+
     this.setState({
       minLat: mapBounds._southWest.lat,
       maxLat: mapBounds._northEast.lat,
