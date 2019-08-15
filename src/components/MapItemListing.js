@@ -73,6 +73,7 @@ const MAP_ITEMS_QUERY = gql`
       id
       name
       category {
+        id
         name
       }
       images {
