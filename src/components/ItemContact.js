@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { graphql, compose } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import _ from 'lodash';
 import gql from 'graphql-tag';
 
 class ItemContact extends Component {
@@ -103,7 +104,7 @@ const CREATE_CONVERSATION_MUTATION = gql`
   }
 `;
 
-export default compose(
+export default _.flowRight(
   graphql(CONVERSATION_QUERY, {
     name: 'conversationQuery',
     options: (props) => ({

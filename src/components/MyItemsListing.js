@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { graphql, compose } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import _ from 'lodash';
 import gql from 'graphql-tag';
 import MyItem from './MyItem';
 
@@ -48,7 +49,6 @@ const USER_ITEMS_QUERY = gql`
         id
         name
         description
-        location
         category {
           id
           name
@@ -58,7 +58,7 @@ const USER_ITEMS_QUERY = gql`
   }
 `;
 
-const MyItemsListingWithQuery = compose(
+const MyItemsListingWithQuery = _.flowRight(
   graphql(LOGGED_IN_USER_QUERY, {
     name: 'loggedInUserQuery',
     options: { fetchPolicy: 'network-only' }

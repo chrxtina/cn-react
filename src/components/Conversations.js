@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link, Route, withRouter } from 'react-router-dom';
-import { graphql, compose } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import _ from 'lodash';
 import gql from 'graphql-tag';
 import Messages from './Messages';
 
@@ -58,7 +59,7 @@ const USER_CONVERSATIONS_QUERY = gql`
   }
 `;
 
-export default compose(
+export default _.flowRight(
   graphql(USER_CONVERSATIONS_QUERY, {
     name: 'userConversationsQuery'}),
   graphql(LOGGED_IN_USER_QUERY, {

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-import { graphql, compose } from 'react-apollo';
+import { graphql } from 'react-apollo';
+import _ from 'lodash';
 import gql from 'graphql-tag';
 
 
@@ -84,7 +85,7 @@ const LOGGED_IN_USER_QUERY = gql`
   }
 `;
 
-const NewMessageWithMutation = compose(
+const NewMessageWithMutation = _.flowRight(
   graphql(CREATE_MESSAGE_MUTATION, {
     name: 'createMessageMutation'
   }),
