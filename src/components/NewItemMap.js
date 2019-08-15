@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
-import { Map, TileLayer } from 'react-leaflet';
+import { Map, TileLayer, FeatureGroup } from 'react-leaflet';
+import { EditControl } from "react-leaflet-draw";
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
+import 'leaflet-draw/dist/leaflet.draw.css';
 
 class NewItemMap extends Component {
 
   constructor (props) {
     super(props);
     this.state = {
-      position: null
+      position: null,
+      circleActive: false
     };
   }
 
@@ -16,29 +19,31 @@ class NewItemMap extends Component {
     const searchControl = new GeoSearchControl({
       provider: provider,
       autoClose: true,
-      keepResult: true,
       autoCompleteDelay: 300,
       style: 'bar',
-      marker: {
-        draggable: true
-      }
     });
 
     let map =  this.refs.ref.leafletElement;
     map.addControl(searchControl);
-    map.on('geosearch/showlocation', (result) => {
-      this.props.setCoords(result.location.y, result.location.x);
+  }
+
+  _onCreated = (e) => {
+    this.props.setCoords(e.layer._latlng.lat, e.layer._latlng.lng);
+    this.setState({
+      circleActive: true
     });
-    map.on('geosearch/marker/dragend', (result => {
-      this.props.setCoords(result.location.y, result.location.x);
-      console.log(result.location)
-    }))
+  }
+
+  _onEdited = (e) => {
+    e.layers.eachLayer( (layer) => {
+      this.props.setCoords(layer._latlng.lat, layer._latlng.lng);
+    });
   }
 
   render () {
     let position = [42.366560, -71.092700];
-    let zoom = "17";
-    let maxZoom="18";
+    let zoom = "16";
+    let maxZoom="17";
     let style = { height: "400px", width: "600px" };
 
     return (
@@ -54,6 +59,25 @@ class NewItemMap extends Component {
             attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
+          <FeatureGroup>
+            <EditControl
+              position='bottomleft'
+              onEdited={this._onEdited}
+              onCreated={this._onCreated}
+              onDeleted={this._onDeleted}
+              draw={{
+                polyline: false,
+                polygon: false,
+                rectangle: false,
+                marker: false,
+                circle: false,
+                circlemarker: this.state.circleActive === false ? {radius: 150} : false
+              }}
+              edit={{
+                remove: false
+              }}
+            />
+          </FeatureGroup>
         </Map>
       </div>
     )
