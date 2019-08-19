@@ -42,7 +42,7 @@ class MapItemListing extends Component {
                     </div>
                     <i> ({item.category.name}) </i>
                     <Link
-                      to={`category/${item.category.name}/${item.category.id}/${item.id}` }
+                      to={`/item/${item.id}` }
                       target="_blank">
                       View
                     </Link>

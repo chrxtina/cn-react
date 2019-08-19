@@ -9,7 +9,7 @@ class WonItemListingLink extends Component {
       return (
         <li>
           <img src={this.props.item.images[0].url} alt={this.props.item.name} className="item-thumbnail"/>
-          <Link to={`category/${this.props.item.category.name}/${this.props.item.category.id}/${this.props.item.id}`}>
+          <Link to={`/item/${this.props.item.id}`}>
             {this.props.item.name}
           </Link>
         </li>
@@ -17,7 +17,7 @@ class WonItemListingLink extends Component {
     } else {
       return (
         <li>
-          <Link to={`category/${this.props.item.category.name}/${this.props.item.category.id}/${this.props.item.id}`}>
+          <Link to={`/item/${this.props.item.id}`}>
             {this.props.item.name}
           </Link>
         </li>

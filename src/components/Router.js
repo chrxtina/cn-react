@@ -3,7 +3,7 @@ import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import { AuthProvider, AuthConsumer } from '../context/Auth';
 import Home from './Home';
 import ProtectedRoute from './ProtectedRoute';
-import CategoryListing from './CategoryListing';
+import ItemDetails from './ItemDetails';
 import NewItem from './NewItem';
 import MyItemsListing from './MyItemsListing';
 import WonItemsListing from './WonItemsListing';
@@ -38,12 +38,11 @@ class Router extends Component {
               <nav className="nav-bar">
                 <ul className="nav">
                   <li><Link to="/">Home</Link></li>
-                  <li><Link to="/category">Categories</Link></li>
                 </ul>
               </nav>
               <Switch>
                 <Route exact path="/" component={Home} />
-                <Route path="/category" component={CategoryListing}/>
+                <Route path="/item/:itemId" component={ItemDetails}/>
                 <ProtectedRoute path="/new-item" component={NewItem}/>
                 <ProtectedRoute path="/my-items" component={MyItemsListing} />
                 <ProtectedRoute path="/won-items" component={WonItemsListing} />

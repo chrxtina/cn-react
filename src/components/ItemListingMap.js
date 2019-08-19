@@ -83,7 +83,7 @@ class ItemListingMap extends Component {
                       <img src={item.images[0].url} alt={item.name} className="item-thumbnail"/>
                     ): ""}
                   </div>
-                  <Link to={`category/${item.category.name}/${item.category.id}/${item.id}` } target="_blank">
+                  <Link to={`/item/${item.id}` } target="_blank">
                     {item.name}
                   </Link>
                   <div><i>{item.category.name}</i></div>
