@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { Map, TileLayer, FeatureGroup } from 'react-leaflet';
+import L from 'leaflet';
+import { Map, TileLayer, FeatureGroup, Marker } from 'react-leaflet';
 import { EditControl } from "react-leaflet-draw";
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import 'leaflet-draw/dist/leaflet.draw.css';
@@ -25,6 +26,14 @@ class NewItemMap extends Component {
 
     let map =  this.refs.ref.leafletElement;
     map.addControl(searchControl);
+
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((position)=> {
+        this.setState({
+          position: [position.coords.latitude, position.coords.longitude]
+        });
+      });
+    }
   }
 
   _onCreated = (e) => {
@@ -41,7 +50,7 @@ class NewItemMap extends Component {
   }
 
   render () {
-    let position = [42.366560, -71.092700];
+    let position = this.state.position;
     let zoom = "16";
     let maxZoom="17";
     let style = { height: "400px", width: "600px" };
@@ -59,6 +68,11 @@ class NewItemMap extends Component {
             attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
+          <Marker
+           position={position}
+           icon={L.divIcon({className: "pulseIcon"})}
+          >
+          </Marker>
           <FeatureGroup>
             <EditControl
               position='bottomleft'
