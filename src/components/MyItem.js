@@ -51,7 +51,7 @@ class MyItem extends Component {
     if (!this.state.isEditActive) {
       return (
         <li>
-          <Link to={`category/${this.props.item.category.name}/${this.props.item.category.id}/${this.props.item.id}`}>
+          <Link to={`/item/${this.props.item.id}`}>
             {this.props.item.name}
           </Link>
           <div>
@@ -150,24 +150,38 @@ class MyItem extends Component {
           },
           {
             query: gql`
-              query ItemsQuery($id: ID!) {
-                allItems(filter: {
-                  category: {
-                    id: $id
-                  },
-                  isExpired: false,
-                },
-                orderBy: createdAt_ASC
+              query MapItemsQuery (
+                $minLat: Float!
+                $maxLat: Float!
+                $minLng: Float!
+                $maxLng: Float!
               ) {
+                allItems (filter: {
+                  lat_gte: $minLat
+                  lat_lte: $maxLat
+                  lng_gte: $minLng
+                  lng_lte: $maxLng
+                }){
                   id
                   name
+                  category {
+                    id
+                    name
+                  }
                   images {
                     url
                   }
+                  lat
+                  lng
                 }
               }
             `,
-            variables: { id: this.state.categoryId },
+            variables: {
+              minLat: parseFloat(localStorage.getItem('minLat')),
+              maxLat: parseFloat(localStorage.getItem('maxLat')),
+              minLng: parseFloat(localStorage.getItem('minLng')),
+              maxLng: parseFloat(localStorage.getItem('maxLng'))
+            },
           }
         ],
       })
