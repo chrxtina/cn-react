@@ -49,9 +49,16 @@ const USER_ITEMS_QUERY = gql`
         id
         name
         description
+        lat
+        lng
+        isExpired
         category {
           id
           name
+        }
+        images {
+          id
+          url
         }
       }
     }

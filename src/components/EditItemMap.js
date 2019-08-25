@@ -1,17 +1,16 @@
 import React, { Component } from 'react';
-import L from 'leaflet';
-import { Map, TileLayer, FeatureGroup, Marker } from 'react-leaflet';
+import { Map, TileLayer, FeatureGroup, CircleMarker } from 'react-leaflet';
 import { EditControl } from "react-leaflet-draw";
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 import 'leaflet-draw/dist/leaflet.draw.css';
 
-class NewItemMap extends Component {
+class EditItemMap extends Component {
 
   constructor (props) {
     super(props);
     this.state = {
-      position: null,
-      circleActive: false
+      position: [this.props.lat, this.props.lng],
+      circleActive: true
     };
   }
 
@@ -26,14 +25,6 @@ class NewItemMap extends Component {
 
     let map =  this.refs.ref.leafletElement;
     map.addControl(searchControl);
-
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position)=> {
-        this.setState({
-          position: [position.coords.latitude, position.coords.longitude]
-        });
-      });
-    }
   }
 
   _onCreated = (e) => {
@@ -74,11 +65,6 @@ class NewItemMap extends Component {
             attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
             url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
           />
-          <Marker
-           position={position}
-           icon={L.divIcon({className: "pulseIcon"})}
-          >
-          </Marker>
           <FeatureGroup>
             <EditControl
               position='bottomleft'
@@ -97,6 +83,7 @@ class NewItemMap extends Component {
                 remove: true
               }}
             />
+            <CircleMarker center={position} radius={150} />
           </FeatureGroup>
         </Map>
       </div>
@@ -104,4 +91,4 @@ class NewItemMap extends Component {
   }
 }
 
-export default NewItemMap;
+export default EditItemMap;

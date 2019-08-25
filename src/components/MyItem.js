@@ -3,7 +3,9 @@ import { Link, withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 import _ from 'lodash';
 import gql from 'graphql-tag';
-import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import EditItemMap from './EditItemMap';
+import ImageThumbnail from './ImageThumbnail';
+import Dropzone from "react-dropzone";
 
 class MyItem extends Component {
   constructor (props) {
@@ -13,14 +15,18 @@ class MyItem extends Component {
       id: this.props.item.id,
       name: this.props.item.name,
       description: this.props.item.description,
-      location: this.props.item.location,
       lat: this.props.item.lat,
       lng: this.props.item.lng,
-      categoryId: this.props.item.category.id
+      categoryId: this.props.item.category.id,
+      isExpired: this.props.item.isExpired,
+      images: this.props.item.images,
+      imgIdsToDelete: []
     };
 
     this.toggleEdit = this.toggleEdit.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
+    this.setCoords = this.setCoords.bind(this);
+    this.handleDeleteImage = this.handleDeleteImage.bind(this);
   }
 
   toggleEdit() {
@@ -31,10 +37,11 @@ class MyItem extends Component {
       this.setState( state => ({
         name: this.props.item.name,
         description: this.props.item.description,
-        location: this.props.item.location,
         lat: this.props.item.lat,
         lng: this.props.item.lng,
-        categoryId: this.props.item.category.id
+        categoryId: this.props.item.category.id,
+        images: this.props.item.images,
+        imgIdsToDelete: []
       }));
     }
   }
@@ -47,6 +54,43 @@ class MyItem extends Component {
     });
   }
 
+  setCoords(lat, lng) {
+    this.setState({
+      lat: lat,
+      lng: lng
+    });
+  }
+
+  onDrop = (files) => {
+    let data = new FormData();
+    data.append('data', files[0]);
+
+    fetch('https://api.graph.cool/file/v1/cjl5h50yv4ufs0116k644tfp4', {
+      method: 'POST',
+      body: data
+    }).then(response => {
+      return response.json()
+    }).then(image => {
+
+      this.setState({
+        images: [...this.state.images, image]
+      });
+    });
+  }
+
+  handleDeleteImage(id, i) {
+    let images = [...this.state.images];
+    let imgIdsToDelete = [...this.state.imgIdsToDelete];
+
+    imgIdsToDelete.push(id);
+    images.splice(i, 1);
+
+    this.setState({
+      images: images,
+      imgIdsToDelete: imgIdsToDelete
+    });
+  }
+
   render() {
     if (!this.state.isEditActive) {
       return (
@@ -54,6 +98,7 @@ class MyItem extends Component {
           <Link to={`/item/${this.props.item.id}`}>
             {this.props.item.name}
           </Link>
+          <span>{this.state.isExpired ? "Expired":"Active"}</span>
           <div>
             <button onClick={this.toggleEdit}>Edit</button>
             <button onClick={this.handleDelete}>Delete</button>
@@ -65,6 +110,20 @@ class MyItem extends Component {
       return (
         <li>
           <form onSubmit={this.handleSubmit}>
+            <label>
+              Category:
+              <select
+                name="categoryId"
+                value={this.state.categoryId}
+                onChange={this.handleInputChange}>
+                  <option value="" disabled>Select</option>
+                  {this.props.allCategoriesQuery.allCategories && this.props.allCategoriesQuery.allCategories.map(category => (
+                    <option key={category.id} value={category.id}>
+                      {category.name}
+                    </option>
+                  ))}
+              </select>
+            </label>
             <label>
               Name:
               <input
@@ -82,15 +141,25 @@ class MyItem extends Component {
                 onChange={this.handleInputChange}
               />
             </label>
-            <label>
-              Location:
-              <input
-                name="location"
-                type="text"
-                value={this.state.location}
-                onChange={this.handleInputChange}
-              />
-            </label>
+            <EditItemMap lat={this.props.item.lat} lng={this.props.item.lng} setCoords={this.setCoords}/>
+
+            {
+              this.state.images.length > 0 && (
+                <div>
+                  {this.state.images.map((image, i) =>
+                    <ImageThumbnail image={image} key={i} onDeleteImage={this.handleDeleteImage} index={i}/>
+                  )}
+                </div>
+              )
+            }
+
+            <label>Add image</label>
+            <Dropzone
+              onDrop={this.onDrop}
+            >
+                <div>Drop an image or click to select</div>
+            </Dropzone>
+
             <div>
               <input type="submit" value="Submit" />
               <button onClick={this.toggleEdit}>Cancel</button>
@@ -104,15 +173,33 @@ class MyItem extends Component {
   handleSubmit = async (event) => {
     event.preventDefault();
 
-    const provider = new OpenStreetMapProvider();
-    await provider.search({ query: this.state.location })
-      .then((result) => this.setState({
-        lat: parseFloat(result[0].y),
-        lng: parseFloat(result[0].x),
-      }));
+    const {
+      id,
+      name,
+      description,
+      categoryId,
+      lat,
+      lng,
+      imgIdsToDelete,
+      images
+    } = this.state;
 
-    const {id, name, description, location, categoryId, lat, lng} = this.state;
-    await this.props.updateItemMutation({variables: {id, name, description, location, categoryId, lat, lng}});
+    let imagesIds = [];
+    images.map(image => {
+      imagesIds.push(image.id);
+    })
+
+    await this.props.updateItemMutation(
+      {variables: {
+        id,
+        name,
+        description,
+        categoryId,
+        lat,
+        lng,
+        imgIdsToDelete,
+        imagesIds
+      }});
     this.setState({
       isEditActive: false,
     });
@@ -141,6 +228,7 @@ class MyItem extends Component {
                       name
                     }
                     images {
+                      id
                       url
                     }
                   }
@@ -169,6 +257,7 @@ class MyItem extends Component {
                     name
                   }
                   images {
+                    id
                     url
                   }
                   lat
@@ -189,15 +278,48 @@ class MyItem extends Component {
   }
 }
 
-const UPDATE_ITEM_MUTATION = gql`
-  mutation UpdateItemMutation($id: ID!, $name: String!, $description: String!, $location: String!, $categoryId: ID!, $lat: Float, $lng: Float) {
-    updateItem(id: $id, name: $name, description: $description, location: $location, categoryId: $categoryId, lat: $lat, lng: $lng) {
+const ALL_CATEGORIES_QUERY = gql`
+  query AllCategoriesQuery {
+    allCategories(orderBy: name_ASC) {
       id
       name
+    }
+  }
+`;
+
+const UPDATE_ITEM_MUTATION = gql`
+  mutation UpdateItemMutation(
+    $id: ID!,
+    $name: String!,
+    $description: String!,
+    $categoryId: ID!,
+    $lat: Float,
+    $lng: Float,
+    $imgIdsToDelete: [String!],
+    $imagesIds: [ID!]
+  ) {
+    updateItem(
+      id: $id,
+      name: $name,
+      description: $description,
+      categoryId: $categoryId,
+      lat: $lat,
+      lng: $lng,
+      imgIdsToDelete: $imgIdsToDelete,
+      imagesIds: $imagesIds
+    ) {
+      id
+      name
+      category {
+        id
+      }
       description
-      location
       lat
       lng
+      images {
+        id
+        url
+      }
     }
   }
 `;
@@ -211,6 +333,9 @@ const DELETE_ITEM_MUTATION = gql`
 `;
 
 const MyItemWithMutation = _.flowRight(
+  graphql(ALL_CATEGORIES_QUERY, {
+    name: 'allCategoriesQuery'
+  }),
   graphql(UPDATE_ITEM_MUTATION, {
     name: 'updateItemMutation'
   }),

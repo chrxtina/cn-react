@@ -151,6 +151,7 @@ class NewItem extends Component {
                     name
                   }
                   images {
+                    id
                     url
                   }
                 }
@@ -209,8 +210,23 @@ const ALL_CATEGORIES_QUERY = gql`
 `;
 
 const CREATE_ITEM_MUTATION = gql`
-  mutation CreateItemMutation($name: String!, $description: String!, $categoryId: ID!, $ownerId: ID!, $imagesIds: [ID!], $lat: Float, $lng: Float) {
-    createItem(name: $name, description: $description, categoryId: $categoryId, ownerId: $ownerId, imagesIds: $imagesIds, lat: $lat, lng: $lng) {
+  mutation CreateItemMutation(
+    $name: String!,
+    $description: String!,
+    $categoryId: ID!,
+    $ownerId: ID!,
+    $imagesIds: [ID!],
+    $lat: Float,
+    $lng: Float
+  ) {
+    createItem(name: $name,
+      description: $description,
+      categoryId: $categoryId,
+      ownerId: $ownerId,
+      imagesIds: $imagesIds,
+      lat: $lat,
+      lng: $lng
+    ) {
       id
       name
       description
