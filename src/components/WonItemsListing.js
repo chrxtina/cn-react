@@ -21,11 +21,12 @@ class WonItemsListing extends Component {
 
     return (
       <div>
+        <h3>Won Items</h3>
         <ul>
           {
-            myItems.map(item =>(
+            myItems.length > 0 ? myItems.map(item =>(
               <WonItemListingLink key={item.id} item={item} refresh={() => this.props.userItemsQuery.refetch()} />
-            ))
+            )) : "You haven't won any items"
           }
         </ul>
       </div>

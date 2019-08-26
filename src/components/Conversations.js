@@ -19,15 +19,17 @@ class Conversations extends React.Component {
       <div>
         <h3>Messages</h3>
         <ul>
-          {this.props.userConversationsQuery.user.conversations && this.props.userConversationsQuery.user.conversations.map(conversation => (
-            <li key={conversation.id}>
-              <Link to={`${match.url}/${conversation.id}`}>
-                {conversation.users.map( user => {
-                  return currentUserId !== user.id ? <span key={user.id}>{user.name}</span> : null
-                })}
-              </Link>
-            </li>
-          ))}
+          {
+            this.props.userConversationsQuery.user.conversations.length > 0 ? this.props.userConversationsQuery.user.conversations.map(conversation => (
+              <li key={conversation.id}>
+                <Link to={`${match.url}/${conversation.id}`}>
+                  {conversation.users.map( user => {
+                    return currentUserId !== user.id ? <span key={user.id}>{user.name}</span> : null
+                  })}
+                </Link>
+              </li>
+            )) : "No Messages"
+          }
         </ul>
         <Route path={`${match.url}/:conversationId`}
           render={ (props) => <Messages {...props} currentUserId={currentUserId} />} />

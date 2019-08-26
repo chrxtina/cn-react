@@ -21,11 +21,12 @@ class MyItemsListing extends Component {
 
     return (
       <div>
+        <h3>My Items</h3>
         <ul>
           {
-            myItems.map(item =>(
+            myItems.length > 0 ? myItems.map(item =>(
               <MyItem key={item.id} item={item} refresh={() => this.props.userItemsQuery.refetch()} />
-            ))
+            )) : "You don't have any items posted"
           }
         </ul>
       </div>
