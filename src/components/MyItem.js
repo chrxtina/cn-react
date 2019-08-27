@@ -27,6 +27,8 @@ class MyItem extends Component {
     this.handleInputChange = this.handleInputChange.bind(this);
     this.setCoords = this.setCoords.bind(this);
     this.handleDeleteImage = this.handleDeleteImage.bind(this);
+    this.handleRenew = this.handleRenew.bind(this);
+    this.handleDeactivate = this.handleDeactivate.bind(this);
   }
 
   toggleEdit() {
@@ -44,6 +46,14 @@ class MyItem extends Component {
         imgIdsToDelete: []
       }));
     }
+  }
+
+  handleRenew() {
+    this.handleToggleStatus(false);
+  }
+
+  handleDeactivate() {
+    this.handleToggleStatus(true);
   }
 
   handleInputChange(event) {
@@ -92,6 +102,7 @@ class MyItem extends Component {
   }
 
   render() {
+
     if (!this.state.isEditActive) {
       return (
         <li>
@@ -101,6 +112,11 @@ class MyItem extends Component {
           <span>{this.state.isExpired ? "Expired":"Active"}</span>
           <div>
             <button onClick={this.toggleEdit}>Edit</button>
+            {
+              this.props.item.isExpired ?
+              <button onClick={this.handleRenew}>Renew</button> :
+              <button onClick={this.handleDeactivate}>Deactivate</button>
+            }
             <button onClick={this.handleDelete}>Delete</button>
           </div>
         </li>
@@ -184,10 +200,7 @@ class MyItem extends Component {
       images
     } = this.state;
 
-    let imagesIds = [];
-    images.map(image => {
-      imagesIds.push(image.id);
-    })
+    let imagesIds = images.map(i => i.id);
 
     await this.props.updateItemMutation(
       {variables: {
@@ -202,6 +215,19 @@ class MyItem extends Component {
       }});
     this.setState({
       isEditActive: false,
+    });
+  }
+
+  handleToggleStatus = async (status) => {
+    const {id} = this.state;
+    let isExpired = status;
+    let renewedAt = isExpired ? null : new Date().toISOString();
+
+    await this.props.toggleStatusItemMutation({
+      variables: {id, isExpired, renewedAt},
+    });
+    this.setState({
+      isExpired: status
     });
   }
 
@@ -332,6 +358,24 @@ const DELETE_ITEM_MUTATION = gql`
   }
 `;
 
+const TOGGLE_STATUS_ITEM_MUTATION = gql`
+  mutation ToggleStatusItemMutation(
+    $id: ID!
+    $isExpired: Boolean
+    $renewedAt: DateTime
+  ) {
+    updateItem(
+      id: $id
+      isExpired: $isExpired
+      renewedAt: $renewedAt
+    ) {
+      id
+      isExpired
+      renewedAt
+    }
+  }
+`;
+
 const MyItemWithMutation = _.flowRight(
   graphql(ALL_CATEGORIES_QUERY, {
     name: 'allCategoriesQuery'
@@ -341,6 +385,9 @@ const MyItemWithMutation = _.flowRight(
   }),
   graphql(DELETE_ITEM_MUTATION, {
     name: 'deleteItemMutation'
+  }),
+  graphql(TOGGLE_STATUS_ITEM_MUTATION, {
+    name: 'toggleStatusItemMutation'
   }),
 )(withRouter(MyItem));
 
