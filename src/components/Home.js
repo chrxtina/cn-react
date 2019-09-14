@@ -4,6 +4,7 @@ import ItemListingMap from './ItemListingMap';
 import MapItemListing from './MapItemListing';
 import MapItemListingFilter from './MapItemListingFilter';
 import CategorySelect from './CategorySelect';
+import Toggle from 'react-toggle';
 
 class Home extends Component {
   constructor (props) {
@@ -20,7 +21,8 @@ class Home extends Component {
       markerIdx: -1,
       selectedOption: null,
       filterCategories: [],
-      applyFilter: false
+      applyFilter: false,
+      isRequest: JSON.parse(localStorage.getItem('isRequest')) || false
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.setMapBounds = this.setMapBounds.bind(this);
@@ -29,6 +31,7 @@ class Home extends Component {
     this.clearMarkerIdx = this.clearMarkerIdx.bind(this);
     this.setSelectedOption = this.setSelectedOption.bind(this);
     this.applyFilter = this.applyFilter.bind(this);
+    this.handleToggleRequest = this.handleToggleRequest.bind(this);
   }
 
   componentDidMount() {
@@ -38,6 +41,12 @@ class Home extends Component {
           position: [position.coords.latitude, position.coords.longitude]
         });
       });
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (this.state.isRequest !== prevState.isRequest) {
+      localStorage.setItem('isRequest', this.state.isRequest);
     }
   }
 
@@ -133,9 +142,21 @@ class Home extends Component {
     });
   }
 
+  handleToggleRequest(){
+    this.setState({
+      isRequest: !this.state.isRequest
+    });
+  }
+
   render () {
     return (
       <div>
+        <label>
+          <Toggle
+            checked={!this.state.isRequest}
+            onChange={this.handleToggleRequest} />
+          <span>Donations</span>
+        </label>
          <form onSubmit={this.handleSubmit}>
            <label>
              Location:
@@ -163,7 +184,8 @@ class Home extends Component {
                 maxLat={this.state.maxLat}
                 minLng={this.state.minLng}
                 maxLng={this.state.maxLng}
-                filterCategories={this.state.filterCategories}/>
+                filterCategories={this.state.filterCategories}
+                isDonation={!this.state.isRequest}/>
             ):(
               <MapItemListing
                 setMapItemListing={this.setMapItemListing}
@@ -171,7 +193,8 @@ class Home extends Component {
                 minLat={this.state.minLat}
                 maxLat={this.state.maxLat}
                 minLng={this.state.minLng}
-                maxLng={this.state.maxLng}/>
+                maxLng={this.state.maxLng}
+                isDonation={!this.state.isRequest}/>
             )
           }
 

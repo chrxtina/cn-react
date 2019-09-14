@@ -6,8 +6,8 @@ import { graphql } from 'react-apollo';
 class MapItemListingFilter extends Component {
 
   componentDidUpdate(prevProps){
-    if (this.props.mapItemQuery.loading !== prevProps.mapItemQuery.loading) {
-      this.props.setMapItemListing(this.props.mapItemQuery.allItems)
+    if (this.props.mapItemCategoryQuery.loading !== prevProps.mapItemCategoryQuery.loading) {
+      this.props.setMapItemListing(this.props.mapItemCategoryQuery.allItems)
     }
   }
 
@@ -16,7 +16,7 @@ class MapItemListingFilter extends Component {
   }
 
   render () {
-    if (this.props.mapItemQuery.loading) {
+    if (this.props.mapItemCategoryQuery.loading) {
       return (
         <div>
           Loading
@@ -24,7 +24,7 @@ class MapItemListingFilter extends Component {
       )
     }
 
-    const Items = this.props.mapItemQuery.allItems;
+    const Items = this.props.mapItemCategoryQuery.allItems;
 
     return (
       <div className="map-item-listing">
@@ -42,7 +42,7 @@ class MapItemListingFilter extends Component {
                     </div>
                     <i> ({item.category.name}) </i>
                     <Link
-                      to={`category/${item.category.name}/${item.category.id}/${item.id}` }
+                      to={`/item/${item.id}` }
                       target="_blank">
                       View
                     </Link>
@@ -64,12 +64,14 @@ const MAP_ITEMS_QUERY = gql`
     $minLng: Float!
     $maxLng: Float!
     $filterCategories: [String!]
+    $itemType: ItemType!
   ) {
     allItems (filter: {
       lat_gte: $minLat
       lat_lte: $maxLat
       lng_gte: $minLng
       lng_lte: $maxLng
+      itemType: $itemType
       category: {
         name_in: $filterCategories
       }
@@ -77,8 +79,10 @@ const MAP_ITEMS_QUERY = gql`
       id
       name
       category {
+        id
         name
       }
+      itemType
       images {
         url
       }
@@ -89,14 +93,15 @@ const MAP_ITEMS_QUERY = gql`
 `;
 
 const MapItemListingWithGraphQL = graphql(MAP_ITEMS_QUERY, {
-  name: 'mapItemQuery',
+  name: 'mapItemCategoryQuery',
   options: (props) => ({
     variables: {
       minLat: props.minLat,
       maxLat: props.maxLat,
       minLng: props.minLng,
       maxLng: props.maxLng,
-      filterCategories: props.filterCategories
+      filterCategories: props.filterCategories,
+      itemType: props.isDonation ? "Donation" : "Request"
     }
   })
 })(MapItemListingFilter);

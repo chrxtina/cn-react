@@ -18,6 +18,7 @@ class NewItem extends Component {
         categoryId: "",
         imagesIds: [],
         imagesUrls: [],
+        itemType: ""
     };
     this.handleInputChange = this.handleInputChange.bind(this);
     this.setCoords = this.setCoords.bind(this);
@@ -64,6 +65,21 @@ class NewItem extends Component {
     return (
       <div className="new-item">
         <form onSubmit={this.handleSubmit}>
+          <label>
+            Type:
+            <select
+              name="itemType"
+              value={this.state.itemType}
+              onChange={this.handleInputChange}>
+                <option value="" disabled>Select</option>
+                <option value="Donation">
+                  donation
+                </option>
+                <option value="Request">
+                  request
+                </option>
+            </select>
+          </label>
           <label>
             Category:
             <select
@@ -130,10 +146,10 @@ class NewItem extends Component {
       return
     }
 
-    const {name, description, categoryId, imagesIds, lat, lng} = this.state;
+    const {name, description, categoryId, imagesIds, lat, lng, itemType} = this.state;
     const ownerId = this.props.loggedInUserQuery.loggedInUser.id;
     await this.props.createItemMutation({
-      variables: {name, description, categoryId, ownerId, imagesIds, lat, lng},
+      variables: {name, description, categoryId, ownerId, imagesIds, lat, lng, itemType},
       refetchQueries: [
         {
           query: gql`
@@ -154,6 +170,7 @@ class NewItem extends Component {
                     id
                     url
                   }
+                  itemType
                 }
               }
             }
@@ -184,6 +201,7 @@ class NewItem extends Component {
                 }
                 lat
                 lng
+                itemType
               }
             }
           `,
@@ -217,7 +235,8 @@ const CREATE_ITEM_MUTATION = gql`
     $ownerId: ID!,
     $imagesIds: [ID!],
     $lat: Float,
-    $lng: Float
+    $lng: Float,
+    $itemType: ItemType!
   ) {
     createItem(name: $name,
       description: $description,
@@ -225,7 +244,8 @@ const CREATE_ITEM_MUTATION = gql`
       ownerId: $ownerId,
       imagesIds: $imagesIds,
       lat: $lat,
-      lng: $lng
+      lng: $lng,
+      itemType: $itemType
     ) {
       id
       name
@@ -241,6 +261,7 @@ const CREATE_ITEM_MUTATION = gql`
       }
       lat
       lng
+      itemType
     }
   }
 `;

@@ -63,12 +63,14 @@ const MAP_ITEMS_QUERY = gql`
     $maxLat: Float!
     $minLng: Float!
     $maxLng: Float!
+    $itemType: ItemType!
   ) {
     allItems (filter: {
       lat_gte: $minLat
       lat_lte: $maxLat
       lng_gte: $minLng
       lng_lte: $maxLng
+      itemType: $itemType
     }){
       id
       name
@@ -76,6 +78,7 @@ const MAP_ITEMS_QUERY = gql`
         id
         name
       }
+      itemType
       images {
         url
       }
@@ -92,7 +95,8 @@ const MapItemListingWithGraphQL = graphql(MAP_ITEMS_QUERY, {
       minLat: props.minLat,
       maxLat: props.maxLat,
       minLng: props.minLng,
-      maxLng: props.maxLng
+      maxLng: props.maxLng,
+      itemType: props.isDonation ? "Donation" : "Request"
     }
   })
 })(MapItemListing);

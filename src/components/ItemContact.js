@@ -33,7 +33,7 @@ class ItemContact extends Component {
     if ( this.state.convos.length < 1) {
       let usersIds = [];
       usersIds.push(this.props.owner);
-      usersIds.push(this.props.winner);
+      usersIds.push(this.props.winner || this.props.currentUser);
 
       await this.props.createConversationMutation({
         variables: {usersIds},
@@ -48,11 +48,12 @@ class ItemContact extends Component {
 
   render() {
 
-    const { currentUser, owner, winner } = this.props;
+    const { currentUser, owner, winner, itemType } = this.props;
 
     return (
       <>
         {
+          itemType === "Donation" &&
           currentUser === owner  &&  (
             <div>
               <div>A winner has been chosen</div>
@@ -62,10 +63,21 @@ class ItemContact extends Component {
         }
 
         {
+          itemType === "Donation" &&
           currentUser === winner  && (
             <div>
               <div>You are the winner!</div>
               <button onClick={this.handleSendMessage}> Message Owner </button>
+            </div>
+          )
+        }
+
+        {
+          itemType === "Request" &&
+          currentUser !== winner &&
+          currentUser !== owner && (
+            <div>
+              <button onClick={this.handleSendMessage}> Message Requester </button>
             </div>
           )
         }
@@ -110,7 +122,7 @@ export default _.flowRight(
     options: (props) => ({
       variables: {
         owner: props.owner,
-        winner: props.winner
+        winner: props.winner || props.currentUser
       }
     })
   }),

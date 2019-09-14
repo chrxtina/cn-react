@@ -59,6 +59,9 @@ class ItemDetails extends Component {
     return (
       <div>
         <div>
+          Type: {Item.itemType}
+        </div>
+        <div>
           {Item.name}
         </div>
         <div>
@@ -81,7 +84,8 @@ class ItemDetails extends Component {
         )}
 
         {
-          this.state.currentUserId !== null && ((
+          this.state.currentUserId !== null &&
+          Item.itemType === "Donation" && ((
             Item.owner.id === this.state.currentUserId ||
             Item.isExpired === true ||
             Item.interests.find(interest => {return interest.owner.id === this.state.currentUserId}) ||
@@ -107,6 +111,7 @@ class ItemDetails extends Component {
           )
         }
         {
+          Item.itemType === "Donation" &&
           this.state.currentUserId === null &&
           this.state.isExpire !== false && (
             <div>You're logged out. Log in for a chance to win this item!</div>
@@ -131,13 +136,17 @@ class ItemDetails extends Component {
         </div>
 
         {
+          Item.itemType === "Donation" &&
           Item.isExpired && (
             Item.winner !== null ? (
-              ((this.state.currentUserId === Item.owner.id) || (this.state.currentUserId === Item.winner.id)) && (
+              ((this.state.currentUserId === Item.owner.id) ||
+              (this.state.currentUserId === Item.winner.id)) &&
+              (
                 <ItemContact
                  currentUser={this.state.currentUserId}
                  owner={Item.owner.id}
                  winner={Item.winner.id}
+                 itemType={Item.itemType}
                />
               )
             ) : (
@@ -146,6 +155,21 @@ class ItemDetails extends Component {
               )
             )
           )
+        }
+
+        {
+          Item.itemType === "Request" &&
+          this.state.currentUserId ? (
+            this.state.currentUserId !== Item.owner.id && (
+              <ItemContact
+               currentUser={this.state.currentUserId}
+               owner={Item.owner.id}
+               itemType={Item.itemType}
+             />
+           )
+
+         ) : "You are logged out. Log in to contact the requester"
+
         }
       </div>
     );
@@ -177,6 +201,7 @@ const ITEM_QUERY = gql`
           id
         }
       }
+      itemType
     }
   }
 `;
