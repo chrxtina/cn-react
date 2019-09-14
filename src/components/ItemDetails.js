@@ -158,18 +158,17 @@ class ItemDetails extends Component {
         }
 
         {
-          Item.itemType === "Request" &&
-          this.state.currentUserId ? (
-            this.state.currentUserId !== Item.owner.id && (
-              <ItemContact
-               currentUser={this.state.currentUserId}
-               owner={Item.owner.id}
-               itemType={Item.itemType}
-             />
-           )
-
-         ) : "You are logged out. Log in to contact the requester"
-
+          Item.itemType === "Request" && (
+            this.state.currentUserId ? (
+              this.state.currentUserId !== Item.owner.id && (
+                <ItemContact
+                 currentUser={this.state.currentUserId}
+                 owner={Item.owner.id}
+                 itemType={Item.itemType}
+               />
+             )
+            ) : "You are logged out. Log in to contact the requester"
+          )
         }
       </div>
     );

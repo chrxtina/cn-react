@@ -54,7 +54,7 @@ class ItemContact extends Component {
       <>
         {
           itemType === "Donation" &&
-          currentUser === owner  &&  (
+          currentUser === owner && (
             <div>
               <div>A winner has been chosen</div>
               <button onClick={this.handleSendMessage}> Message Winner </button>
@@ -64,7 +64,7 @@ class ItemContact extends Component {
 
         {
           itemType === "Donation" &&
-          currentUser === winner  && (
+          currentUser === winner && (
             <div>
               <div>You are the winner!</div>
               <button onClick={this.handleSendMessage}> Message Owner </button>
