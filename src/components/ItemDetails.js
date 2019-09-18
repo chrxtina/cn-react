@@ -12,13 +12,13 @@ class ItemDetails extends Component {
   constructor (props) {
     super(props);
     this.state = {
-      isExpired: false,
+      hasExpired: false,
       currentUserId: "",
       interestBtnOff: false
     };
 
-    this.handleExpire = this.handleExpire.bind(this);
     this.disableInterestBtn = this.disableInterestBtn.bind(this);
+    this.handleHasExpired = this.handleHasExpired.bind(this);
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -36,9 +36,9 @@ class ItemDetails extends Component {
     });
   }
 
-  handleExpire() {
+  handleHasExpired() {
     this.setState({
-      isExpired: true
+      hasExpired: true
     });
   }
 
@@ -77,17 +77,28 @@ class ItemDetails extends Component {
           {Item.createdAt}
         </div>
 
-        {this.state.isExpired ? (
-          'Item expired'
-        ) : (
-          <CountdownTimer createdAt={Item.createdAt} handleExpire={this.handleExpire} />
-        )}
+        {
+          Item.renewedAt ? (
+            <CountdownTimer
+              startTime={Item.renewedAt}
+              isExpired={Item.isExpired}
+              handleHasExpired={this.handleHasExpired}
+            />
+          ) : (
+            <CountdownTimer
+              startTime={Item.createdAt}
+              isExpired={Item.isExpired}
+              handleHasExpired={this.handleHasExpired}
+            />
+          )
+        }
 
         {
           this.state.currentUserId !== null &&
           Item.itemType === "Donation" && ((
             Item.owner.id === this.state.currentUserId ||
             Item.isExpired === true ||
+            this.state.hasExpired === true ||
             Item.interests.find(interest => {return interest.owner.id === this.state.currentUserId}) ||
             this.state.interestBtnOff === true
           ) ? (
@@ -180,6 +191,7 @@ const ITEM_QUERY = gql`
     Item(id: $id) {
       id
       createdAt
+      renewedAt
       name
       description
       lat
