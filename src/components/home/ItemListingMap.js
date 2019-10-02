@@ -45,7 +45,7 @@ class ItemListingMap extends Component {
     let zoom = "14";
     let maxZoom = "16"
     let minZoom = "4";
-    let style = { height: "60vh", width: "calc(100vw - 250px)", zIndex:"0" };
+    let style = { height: "100%", width: "100%", zIndex:"0" };
 
     return (
       <div id="mapid" className="item-listing-map">

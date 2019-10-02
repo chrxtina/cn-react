@@ -3,8 +3,7 @@ import { OpenStreetMapProvider } from 'leaflet-geosearch';
 import ItemListingMap from './ItemListingMap';
 import MapItemListing from './MapItemListing';
 import MapItemListingFilter from './MapItemListingFilter';
-import CategorySelect from './CategorySelect';
-import Toggle from 'react-toggle';
+import CategorySelect from '../CategorySelect';
 
 class Home extends Component {
   constructor (props) {
@@ -150,29 +149,41 @@ class Home extends Component {
 
   render () {
     return (
-      <div>
-        <label>
-          <Toggle
-            checked={!this.state.isRequest}
-            onChange={this.handleToggleRequest} />
-          <span>Donations</span>
-        </label>
-         <form onSubmit={this.handleSubmit}>
-           <label>
-             Location:
-             <input
-               name="location"
-               type="text"
-               value={this.state.location}
-               onChange={this.handleInputChange}
-             />
-           </label>
-           <input type="submit" value="Submit" />
-         </form>
-         <div>{this.state.coordErrorMsg}</div>
+      <div className="main-search-map">
+        <div className="search-criteria">
+          <div className="location-search inline">
+            <form onSubmit={this.handleSubmit}>
+              <input
+                name="location"
+                type="text"
+                placeholder="Location"
+                value={this.state.location}
+                onChange={this.handleInputChange}
+              />
+              <input type="submit" value="Submit" />
+            </form>
+            {
+              this.state.coordErrorMsg && (<div>{this.state.coordErrorMsg}</div>)
+            }
+          </div>
 
-         <CategorySelect setSelectedOption={this.setSelectedOption}/>
-         <button onClick={this.applyFilter}>Apply Filter</button>
+          <span className="switcher switcher-1">
+             <input
+               type="checkbox"
+               id="switcher-1"
+               checked={this.state.isRequest}
+               onChange={this.handleToggleRequest}
+             />
+             <label htmlFor="switcher-1"></label>
+          </span>
+
+          <div className="category-filter">
+            <div className="category-select">
+              <CategorySelect setSelectedOption={this.setSelectedOption}/>
+            </div>
+            <div className="filter-button"><button onClick={this.applyFilter}>Apply Filter</button></div>
+          </div>
+        </div>
 
         <div className="listing-map">
           {

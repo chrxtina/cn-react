@@ -26,7 +26,6 @@
     "react-router-dom": "^5.0.1",
     "react-scripts": "^3.0.1",
     "react-select": "^3.0.4",
-    "react-toggle": "^4.0.2",
     "subscriptions-transport-ws": "^0.9.15"
   },
   "scripts": {

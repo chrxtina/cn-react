@@ -3,11 +3,11 @@ import { Link, withRouter } from 'react-router-dom';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 
-class MapItemListing extends Component {
+class MapItemListingFilter extends Component {
 
   componentDidUpdate(prevProps){
-    if (this.props.mapItemQuery.loading !== prevProps.mapItemQuery.loading) {
-      this.props.setMapItemListing(this.props.mapItemQuery.allItems)
+    if (this.props.mapItemCategoryQuery.loading !== prevProps.mapItemCategoryQuery.loading) {
+      this.props.setMapItemListing(this.props.mapItemCategoryQuery.allItems)
     }
   }
 
@@ -16,7 +16,7 @@ class MapItemListing extends Component {
   }
 
   render () {
-    if (this.props.mapItemQuery.loading) {
+    if (this.props.mapItemCategoryQuery.loading) {
       return (
         <div>
           Loading
@@ -24,32 +24,29 @@ class MapItemListing extends Component {
       )
     }
 
-    const Items = this.props.mapItemQuery.allItems;
+    const Items = this.props.mapItemCategoryQuery.allItems;
 
     return (
       <div className="map-item-listing">
-        <div>Item Listing:</div>
+        <div className="results-number">{Items.length} {this.props.isDonation ? "Donations" : "Requests"}{Items.length !== 1 && ("s")}</div>
         {
           Items && Items.length > 0 ? (
-            <ul>
-              {
-                Items.map((item, idx) =>
-                  <li key={`item-${idx}`}>
-                    <div
-                      onClick={() => this.handleClick(idx)}
-                      >
-                      {item.name}
-                    </div>
-                    <i> ({item.category.name}) </i>
-                    <Link
-                      to={`/item/${item.id}` }
-                      target="_blank">
-                      View
-                    </Link>
-                  </li>
-                )
-              }
-            </ul>
+            Items.map((item, idx) =>
+              <div key={`item-${idx}`} className="listing-item">
+                <div
+                  className="item-title"
+                  onClick={() => this.handleClick(idx)}
+                  >
+                  {item.name}
+                </div>
+                <i> ({item.category.name}) </i>
+                <Link
+                  to={`/item/${item.id}` }
+                  target="_blank">
+                  View
+                </Link>
+              </div>
+            )
           ) : "No items found in this area"
         }
       </div>
@@ -63,6 +60,7 @@ const MAP_ITEMS_QUERY = gql`
     $maxLat: Float!
     $minLng: Float!
     $maxLng: Float!
+    $filterCategories: [String!]
     $itemType: ItemType!
   ) {
     allItems (filter: {
@@ -71,6 +69,9 @@ const MAP_ITEMS_QUERY = gql`
       lng_gte: $minLng
       lng_lte: $maxLng
       itemType: $itemType
+      category: {
+        name_in: $filterCategories
+      }
     }){
       id
       name
@@ -89,16 +90,17 @@ const MAP_ITEMS_QUERY = gql`
 `;
 
 const MapItemListingWithGraphQL = graphql(MAP_ITEMS_QUERY, {
-  name: 'mapItemQuery',
+  name: 'mapItemCategoryQuery',
   options: (props) => ({
     variables: {
       minLat: props.minLat,
       maxLat: props.maxLat,
       minLng: props.minLng,
       maxLng: props.maxLng,
+      filterCategories: props.filterCategories,
       itemType: props.isDonation ? "Donation" : "Request"
     }
   })
-})(MapItemListing);
+})(MapItemListingFilter);
 
 export default withRouter(MapItemListingWithGraphQL);

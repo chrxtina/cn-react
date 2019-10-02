@@ -18,14 +18,16 @@ class LoggedInMenu extends Component {
 
     return (
       <>
-        <div>Welcome, {User.name}</div>
-        <ul>
-          <li><Link to="/new-item">Post Item</Link></li>
-          <li><Link to="/my-items">My Items</Link></li>
-          <li><Link to="/won-items">My Won Items</Link></li>
-          <li><Link to="/messages">Messages</Link></li>
-          <li onClick={this.props.logout}>Logout</li>
-        </ul>
+        <span className="welcome">Welcome, {User.name}</span>
+        <nav className="main-menu">
+          <ul>
+            <li><Link to="/new-item">Post Item</Link></li>
+            <li><Link to="/my-items">My Items</Link></li>
+            <li><Link to="/won-items">My Won Items</Link></li>
+            <li><Link to="/messages">Messages</Link></li>
+            <li onClick={this.props.logout}>Logout</li>
+          </ul>
+        </nav>
       </>
     )
   }
