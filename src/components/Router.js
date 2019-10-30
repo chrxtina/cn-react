@@ -36,7 +36,7 @@ class Router extends Component {
                 </div>
               </header>
 
-              <div className="content">
+              <main>
                 <Switch>
                   <Route exact path="/" component={Home} />
                   <Route path="/item/:itemId" component={ItemDetails}/>
@@ -48,7 +48,7 @@ class Router extends Component {
                   <Route path="/login" component={LoginUser} />
                   <Route component={NotFound}/>
                 </Switch>
-              </div>
+              </main>
           </AuthProvider>
         </BrowserRouter>
       </>

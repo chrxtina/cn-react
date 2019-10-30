@@ -24,8 +24,8 @@ class CreateLogin extends Component {
     }
 
     return (
-      <div className="login-signup wrap-sm">
-        <div className="form-card content-sm">
+      <div className="login-signup">
+        <div className="form-card content content-sm">
           <label>
             <input
               value={this.state.email}
