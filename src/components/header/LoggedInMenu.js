@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 
@@ -18,14 +18,44 @@ class LoggedInMenu extends Component {
 
     return (
       <>
-        <span className="welcome">Welcome, {User.name}</span>
+        <div className="welcome">Welcome, {User.name}</div>
         <nav className="main-menu">
-          <ul>
-            <li><Link to="/new-item">Post Item</Link></li>
-            <li><Link to="/my-items">My Items</Link></li>
-            <li><Link to="/won-items">My Won Items</Link></li>
-            <li><Link to="/messages">Messages</Link></li>
-            <li onClick={this.props.logout}>Logout</li>
+          <ul className="nav">
+            <li>
+              <NavLink
+                onClick={this.props.toggleNav}
+                activeClassName="active"
+                to="/new-item">
+                Post Item
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                onClick={this.props.toggleNav}
+                activeClassName="active"
+                to="/my-items">
+                My Items
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                onClick={this.props.toggleNav}
+                activeClassName="active"
+                to="/won-items">
+                My Won Items
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                onClick={this.props.toggleNav}
+                activeClassName="active"
+                to="/messages">
+                Messages
+              </NavLink>
+            </li>
+            <li onClick={this.props.logout}>
+              Logout
+            </li>
           </ul>
         </nav>
       </>

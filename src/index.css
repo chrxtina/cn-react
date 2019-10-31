@@ -22,11 +22,20 @@ a {
   display: inline-block;
 }
 
+.hide {
+  display: none;
+}
+
+.show {
+  display: block;
+}
+
 /* FORM */
 label {
   display: block;
 }
 
+/* Header */
 .header {
   display: flex;
   align-items: center;
@@ -38,7 +47,7 @@ label {
   margin-left: auto;
 }
 
-nav ul {
+.main-menu .nav {
   display: flex;
   margin: 0;
   padding: 0;
@@ -46,6 +55,9 @@ nav ul {
 
 nav li {
   list-style-type: none;
+}
+
+.main-menu li {
   margin-right: 1rem;
 }
 
@@ -57,6 +69,99 @@ nav li {
   font-family: "Didact Gothic";
   font-size: 40px;
   margin-left: 1rem;
+}
+
+.burger {
+  display: none;
+  margin: 1em;
+  width: 40px;
+}
+
+.burger:after,
+.burger:before,
+.burger div {
+  background-color: black;
+  border-radius: 3px;
+  content: '';
+  display: block;
+  height: 5px;
+  margin: 7px 0;
+  transition: all .2s ease-in-out;
+}
+
+.burger.active:before {
+  transform: translateY(12px) rotate(135deg);
+}
+
+.burger.active:after {
+  transform: translateY(-12px) rotate(-135deg);
+}
+
+.burger.active div {
+  transform: scale(0);
+}
+
+@media only screen and (max-width: 769px) {
+  .header {
+    justify-content: space-between;
+    position: relative;
+  }
+
+  .header-menu, .burger, .main-menu .nav {
+    display: block;
+  }
+
+  .welcome, .main-menu li {
+    margin: 0;
+    text-align: center;
+  }
+
+  .main-menu li {
+    padding: .5rem;
+  }
+
+  .header-menu > *:first-child {
+    margin-top: .5rem;
+  }
+
+  .header-menu > *:last-child {
+    margin-bottom: .5rem;
+  }
+
+  .header-menu, .header-menu > * {
+    transition: all .3s ease-in-out;
+  }
+
+  .header-menu:not(.closed), .header-menu:not(.closed) > * {
+    transition: all .5s ease-in-out;
+  }
+
+  .header-menu {
+    position: absolute;
+    background: white;
+    width: 100%;
+    left: 0;
+    top: calc(100% - 1rem);
+    z-index: 9999;
+    max-height: 100vh;
+  }
+
+  .header-menu.closed {
+    max-height: 0;
+    overflow: hidden;
+  }
+
+  .header-menu > * {
+    opacity: 1;
+  }
+
+  .header-menu.closed > * {
+    opacity: 0;
+  }
+
+  .header-menu .hide {
+    display: block;
+  }
 }
 
 /*-------- LAYOUT ---------*/

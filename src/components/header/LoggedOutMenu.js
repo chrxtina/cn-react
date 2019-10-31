@@ -1,13 +1,27 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 class LoggedOutMenu extends Component {
   render () {
     return (
       <nav className="main-menu">
-        <ul>
-          <li><Link to="/login">Log In</Link></li>
-          <li><Link to="/signup">Sign Up</Link></li>
+        <ul className="nav">
+          <li>
+            <NavLink
+              to="/login"
+              activeClassName="hide"
+              onClick={this.props.toggleNav}>
+              Log In
+            </NavLink>
+          </li>
+          <li>
+            <NavLink
+              to="/signup"
+              activeClassName="hide"
+              onClick={this.props.toggleNav}>
+              Sign Up
+            </NavLink>
+          </li>
         </ul>
       </nav>
     )

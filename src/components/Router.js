@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
 import { AuthProvider, AuthConsumer } from '../context/Auth';
+import Header from './header/header';
 import Home from './home/Home';
 import ProtectedRoute from './ProtectedRoute';
 import ItemDetails from './ItemDetails';
@@ -21,20 +22,8 @@ class Router extends Component {
       <>
         <BrowserRouter>
           <AuthProvider>
-              <header className="header">
-                <div className="logo"><Link to="/">Bonaber</Link></div>
-                <div className="header-menu">
-                  <AuthConsumer>
-                    { ({isAuth, logout}) => (
-                      isAuth ? (
-                        <LoggedInMenu logout={logout}/>
-                      ):(
-                        <LoggedOutMenu/>
-                      )
-                    )}
-                  </AuthConsumer>
-                </div>
-              </header>
+
+            <Header />
 
               <main>
                 <Switch>
