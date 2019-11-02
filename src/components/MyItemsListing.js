@@ -20,7 +20,7 @@ class MyItemsListing extends Component {
     }
 
     return (
-      <div>
+      <div className="content content-med">
         <h3>My Items</h3>
         <ul>
           {

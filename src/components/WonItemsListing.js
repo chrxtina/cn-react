@@ -20,7 +20,7 @@ class WonItemsListing extends Component {
     }
 
     return (
-      <div>
+      <div className="content content-med">
         <h3>Won Items</h3>
         <ul>
           {

@@ -63,7 +63,7 @@ class NewItem extends Component {
     }
 
     return (
-      <div className="new-item">
+      <div className="new-item content content-med">
         <form onSubmit={this.handleSubmit}>
           <label>
             Type:
@@ -146,10 +146,27 @@ class NewItem extends Component {
       return
     }
 
-    const {name, description, categoryId, imagesIds, lat, lng, itemType} = this.state;
+    const {
+      name,
+      description,
+      categoryId,
+      imagesIds,
+      lat,
+      lng,
+      itemType
+    } = this.state;
     const ownerId = this.props.loggedInUserQuery.loggedInUser.id;
     await this.props.createItemMutation({
-      variables: {name, description, categoryId, ownerId, imagesIds, lat, lng, itemType},
+      variables: {
+        name,
+        description,
+        categoryId,
+        ownerId,
+        imagesIds,
+        lat,
+        lng,
+        itemType
+      },
       refetchQueries: [
         {
           query: gql`

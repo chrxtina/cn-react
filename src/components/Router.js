@@ -5,7 +5,7 @@ import Header from './header/header';
 import Home from './home/Home';
 import ProtectedRoute from './ProtectedRoute';
 import ItemDetails from './ItemDetails';
-import NewItem from './NewItem';
+import NewItem from './post-items/NewItem';
 import MyItemsListing from './MyItemsListing';
 import WonItemsListing from './WonItemsListing';
 import Conversations from './Conversations';
