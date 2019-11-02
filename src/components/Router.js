@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import { BrowserRouter, Route, Switch, Link } from 'react-router-dom';
-import { AuthProvider, AuthConsumer } from '../context/Auth';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
+import { AuthProvider } from '../context/Auth';
 import Header from './header/header';
 import Home from './home/Home';
 import ProtectedRoute from './ProtectedRoute';
@@ -12,8 +12,6 @@ import Conversations from './Conversations';
 import LoginUser from './login-signup/LoginUser';
 import CreateUser from './login-signup/CreateUser';
 import NotFound from './NotFound';
-import LoggedInMenu from './header/LoggedInMenu';
-import LoggedOutMenu from './header/LoggedOutMenu';
 
 class Router extends Component {
 

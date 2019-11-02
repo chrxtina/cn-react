@@ -59,7 +59,7 @@ class NewItemMap extends Component {
     let position = this.state.position;
     let zoom = "16";
     let maxZoom="17";
-    let style = { height: "400px", width: "600px" };
+    let style = { height: "400px", width: "100%" };
 
     return (
       <div id="mapid" className="new-item-map">

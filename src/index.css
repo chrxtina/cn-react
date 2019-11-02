@@ -68,6 +68,7 @@ nav li {
 .logo {
   font-family: "Didact Gothic";
   font-size: 40px;
+  line-height: normal;
   margin-left: 1rem;
 }
 
@@ -310,9 +311,48 @@ nav li {
   max-width: 100%;
 }
 
-.item-preview {
-  max-height: 100px;
-  margin: .5rem;
+.img-preview-uploader {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.img-preview, .dropzone {
+  width: 125px;
+  height: 125px;
+  padding: 8px;
+  border: 1px solid rgba(34,36,38,.15);
+  border-radius: 4px;
+}
+
+.img-preview {
+  margin: 0 8px 8px 0;
+}
+
+.dropzone {
+  border-style: dashed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: border-color .15s;
+}
+
+.dropzone:hover {
+  border-color: #1890ff !important;
+}
+
+.upload-text {
+  color: #666;
+}
+
+.upload-text .icon {
+  text-align: center;
+  display: block;
+  font-size: 35px;
+  margin-bottom: .75rem;
+}
+
+.img-preview img {
+  height: 100%;
 }
 
 .align-right {
@@ -326,6 +366,11 @@ nav li {
 
 .leaflet-control-geosearch.bar form input {
   padding-right: 13px;
+}
+
+.leaflet-control-geosearch.bar form {
+  border: none;
+  padding: 0;
 }
 
 .pulseIcon {

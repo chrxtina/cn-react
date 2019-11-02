@@ -4,6 +4,7 @@ import { graphql} from 'react-apollo';
 import _ from 'lodash';
 import gql from 'graphql-tag';
 import Dropzone from "react-dropzone";
+import { Form, Dropdown, Input, TextArea, Button } from 'semantic-ui-react';
 import NewItemMap from './NewItemMap';
 
 class NewItem extends Component {
@@ -24,9 +25,9 @@ class NewItem extends Component {
     this.setCoords = this.setCoords.bind(this);
   }
 
-  handleInputChange(event) {
-    const value = event.target.value;
-    const name = event.target.name;
+  handleInputChange(e, result) {
+    const value = result.value;
+    const name = result.name;
 
     this.setState({
       [name]: value
@@ -62,78 +63,90 @@ class NewItem extends Component {
       return (<div>Loading</div>)
     }
 
+    let typeOptions = [
+      { key: 'Donation', value: 'Donation', text: 'Donation' },
+      { key: 'Request', value: 'Request', text: 'Request' }
+    ];
+
+    let categoryOptions = [];
+    this.props.allCategoriesQuery.allCategories && this.props.allCategoriesQuery.allCategories.map(category => (
+      categoryOptions.push({key: category.id, value: category.id, text: category.name})
+    ));
+
     return (
       <div className="new-item content content-med">
-        <form onSubmit={this.handleSubmit}>
-          <label>
-            Type:
-            <select
+        <Form onSubmit={this.handleSubmit}>
+          <Form.Group widths='equal'>
+            <Form.Select
+              placeholder='Select...'
+              label="Type"
               name="itemType"
-              value={this.state.itemType}
-              onChange={this.handleInputChange}>
-                <option value="" disabled>Select</option>
-                <option value="Donation">
-                  donation
-                </option>
-                <option value="Request">
-                  request
-                </option>
-            </select>
-          </label>
-          <label>
-            Category:
-            <select
+              options={typeOptions}
+              onChange={this.handleInputChange}
+            />
+            <Form.Select
+              label="Category"
+              placeholder='Select...'
               name="categoryId"
-              value={this.state.categoryId}
-              onChange={this.handleInputChange}>
-                <option value="" disabled>Select</option>
-                {this.props.allCategoriesQuery.allCategories && this.props.allCategoriesQuery.allCategories.map(category => (
-                  <option key={category.id} value={category.id}>
-                    {category.name}
-                  </option>
-                ))}
-            </select>
-          </label>
-          <label>
-            Name:
-            <input
-              name="name"
-              type="text"
-              value={this.state.name}
+              options={categoryOptions}
               onChange={this.handleInputChange}
             />
-          </label>
-          <label>
-            Description:
-            <textarea
-              name="description"
-              value={this.state.description}
-              onChange={this.handleInputChange}
-            />
-          </label>
-          <div>
-            <div>
-              Location
-              <NewItemMap setCoords={this.setCoords}/>
-            </div>
-          </div>
-          <label>Upload image</label>
-          <Dropzone
-            onDrop={this.onDrop}
-          >
-              <div>Drop an image or click to select</div>
-          </Dropzone>
+          </Form.Group>
 
-          {this.state.imagesUrls.length > 0 ?
-            <div>
-              {this.state.imagesUrls.map((image) =>
-                <img src={image} key={image} alt="Preview" className="item-preview"/>
+          <Form.Field
+            control={Input}
+            label='Name'
+            placeholder='Name'
+            name="name"
+            onChange={this.handleInputChange}
+          />
+
+          <Form.Field
+            control={TextArea}
+            label="Description"
+            placeholder='What is your item like?'
+            name="description"
+            onChange={this.handleInputChange}
+          />
+
+          <Form.Field>
+            <label>Location</label>
+            <NewItemMap setCoords={this.setCoords}/>
+          </Form.Field>
+
+          <Form.Field>
+            <label>Images</label>
+            <div className="img-preview-uploader">
+
+              { this.state.imagesUrls.length > 0 && (
+                <div className="img-preview">
+                  {this.state.imagesUrls.map((image) =>
+                    <img src={image} key={image} alt="Preview"/>
+                  )}
+                </div>
               )}
-            </div>
-            : null}
 
-          <input type="submit" value="Submit" />
-        </form>
+              <Dropzone
+                onDrop={this.onDrop}
+              >
+                {({getRootProps, getInputProps}) => (
+                  <section>
+                    <div {...getRootProps()}>
+                      <input {...getInputProps()} />
+                      <div className="dropzone">
+                        <div className="upload-text">
+                          <span className="icon">+</span>
+                          Upload
+                        </div>
+                      </div>
+                    </div>
+                  </section>
+                )}
+              </Dropzone>
+            </div>
+          </Form.Field>
+          <Button type='submit'>Submit</Button>
+        </Form>
       </div>
     );
   }
