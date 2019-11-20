@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
+import Placeholder from '../placeholders/ItemListing';
 
 class MapItemListingFilter extends Component {
 
@@ -18,8 +19,8 @@ class MapItemListingFilter extends Component {
   render () {
     if (this.props.mapItemCategoryQuery.loading) {
       return (
-        <div>
-          Loading
+        <div className="map-item-listing loading">
+          <Placeholder />
         </div>
       )
     }

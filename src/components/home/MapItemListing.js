@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
+import Placeholder from '../placeholders/ItemListing';
 
 class MapItemListing extends Component {
 
@@ -22,8 +23,8 @@ class MapItemListing extends Component {
   render () {
     if (this.props.mapItemQuery.loading) {
       return (
-        <div>
-          Loading
+        <div className="map-item-listing loading">
+          <Placeholder />
         </div>
       )
     }
@@ -32,7 +33,9 @@ class MapItemListing extends Component {
 
     return (
       <div className="map-item-listing">
-        <div className="results-number">{Items.length} {this.props.isDonation ? "Donation" : "Request"}{Items.length !== 1 && ("s")}</div>
+        <div className="results-number">{Items.length} {this.props.isDonation ? "Donation" : "Request"}
+          {Items.length !== 1 && ("s")}
+        </div>
         {
           Items && Items.length > 0 ? (
             Items.map((item, idx) =>

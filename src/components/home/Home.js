@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
+import { Form, Dropdown, Input, Button, Placeholder } from 'semantic-ui-react';
 import ItemListingMap from './ItemListingMap';
 import MapItemListing from './MapItemListing';
 import MapItemListingFilter from './MapItemListingFilter';
@@ -152,22 +153,22 @@ class Home extends Component {
       <div className="main-search-map">
         <div className="search-criteria">
           <div className="location-search inline">
-            <form onSubmit={this.handleSubmit}>
-              <input
+             <Form onSubmit={this.handleSubmit}>
+               <Form.Input
+                action={{ icon: 'search' }}
+                label='Location'
+                placeholder='Boston, MA'
                 name="location"
-                type="text"
-                placeholder="Location"
-                value={this.state.location}
                 onChange={this.handleInputChange}
               />
-              <input type="submit" value="Submit" />
-            </form>
+             </Form>
+
             {
               this.state.coordErrorMsg && (<div>{this.state.coordErrorMsg}</div>)
             }
           </div>
 
-          <span className="switcher switcher-1">
+          <div className="switcher switcher-1">
              <input
                type="checkbox"
                id="switcher-1"
@@ -175,13 +176,13 @@ class Home extends Component {
                onChange={this.handleToggleRequest}
              />
              <label htmlFor="switcher-1"></label>
-          </span>
+          </div>
 
           <div className="category-filter">
             <div className="category-select">
               <CategorySelect setSelectedOption={this.setSelectedOption}/>
             </div>
-            <div className="filter-button"><button onClick={this.applyFilter}>Apply Filter</button></div>
+            <div className="filter-button"><button onClick={this.applyFilter} className="ui button">Apply Filter</button></div>
           </div>
         </div>
 
