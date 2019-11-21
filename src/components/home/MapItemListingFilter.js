@@ -29,7 +29,7 @@ class MapItemListingFilter extends Component {
 
     return (
       <div className="map-item-listing">
-        <div className="results-number">{Items.length} {this.props.isDonation ? "Donations" : "Requests"}{Items.length !== 1 && ("s")}</div>
+        <div className="results-number">{Items.length} {this.props.isDonation ? "Donation" : "Request"}{Items.length !== 1 && ("s")}</div>
         {
           Items && Items.length > 0 ? (
             Items.map((item, idx) =>

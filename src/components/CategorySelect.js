@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import { Dropdown } from 'semantic-ui-react';
 
 class CategorySelect extends Component {
   constructor (props) {
@@ -11,38 +11,42 @@ class CategorySelect extends Component {
     };
   }
 
-  handleChange = selectedOption => {
-    this.setState({ selectedOption }, function(){
+  handleChange = (e, data) => {
+    console.log(data.value);
+    this.setState({ selectedOption: data.value }, function(){
       this.props.setSelectedOption(this.state.selectedOption);
     });
   };
 
   render () {
-    const { selectedOption } = this.state;
-
-    if (this.props.allCategoriesQuery.loading) {
-      return (<div>Loading</div>)
-    }
 
     let options = [];
 
+    if (this.props.allCategoriesQuery.loading) {
+      return (<Dropdown text='Dropdown' options={options} loading />)
+    }
+
     this.props.allCategoriesQuery.allCategories && this.props.allCategoriesQuery.allCategories.map(category => {
       let categoryOption = {
-        value: category.name,
-        label: category.name
+        key: category.id,
+        text: category.name,
+        value: category.name
       }
       return options.push(categoryOption);
     })
 
     return (
-      <div>
-        <Select
-          value={selectedOption}
-          onChange={this.handleChange}
+      <>
+        <Dropdown placeholder='Filter by category'
+          fluid
+          multiple
+          selection
+          clearable
+          search
           options={options}
-          isMulti
+          onChange={this.handleChange}
         />
-      </div>
+      </>
     )
   }
 }

@@ -4,7 +4,7 @@ import { graphql} from 'react-apollo';
 import _ from 'lodash';
 import gql from 'graphql-tag';
 import Dropzone from "react-dropzone";
-import { Form, Dropdown, Input, TextArea, Button } from 'semantic-ui-react';
+import { Form, Input, TextArea, Button } from 'semantic-ui-react';
 import NewItemMap from './NewItemMap';
 
 class NewItem extends Component {

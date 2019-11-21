@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { OpenStreetMapProvider } from 'leaflet-geosearch';
-import { Form, Dropdown, Input, Button, Placeholder } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 import ItemListingMap from './ItemListingMap';
 import MapItemListing from './MapItemListing';
 import MapItemListingFilter from './MapItemListingFilter';
@@ -134,7 +134,7 @@ class Home extends Component {
   applyFilter(){
     let filterCategories = [];
     this.state.selectedOption !== null && this.state.selectedOption.map(category => {
-      return filterCategories.push(category.value);
+      return filterCategories.push(category);
     });
     this.setState({
       applyFilter: true,
