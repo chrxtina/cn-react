@@ -4,7 +4,7 @@ import { Form } from 'semantic-ui-react';
 import ItemListingMap from './ItemListingMap';
 import MapItemListing from './MapItemListing';
 import MapItemListingFilter from './MapItemListingFilter';
-import CategorySelect from '../CategorySelect';
+import CategorySelect from './CategorySelect';
 
 class Home extends Component {
   constructor (props) {
@@ -182,7 +182,7 @@ class Home extends Component {
             <div className="category-select">
               <CategorySelect setSelectedOption={this.setSelectedOption}/>
             </div>
-            <div className="filter-button"><button onClick={this.applyFilter} className="ui button">Apply Filter</button></div>
+            <div className="filter-button"><button onClick={this.applyFilter} className="ui button">Apply</button></div>
           </div>
         </div>
 
