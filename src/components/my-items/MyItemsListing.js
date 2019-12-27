@@ -4,6 +4,7 @@ import { graphql } from 'react-apollo';
 import _ from 'lodash';
 import gql from 'graphql-tag';
 import MyItem from './MyItem';
+import { Card } from 'semantic-ui-react';
 
 class MyItemsListing extends Component {
 
@@ -22,13 +23,13 @@ class MyItemsListing extends Component {
     return (
       <div className="content content-med">
         <h3>My Items</h3>
-        <ul>
+        <Card.Group>
           {
             myItems.length > 0 ? myItems.map(item =>(
               <MyItem key={item.id} item={item} refresh={() => this.props.userItemsQuery.refetch()} />
             )) : "You don't have any items posted"
           }
-        </ul>
+        </Card.Group>
       </div>
     );
   }
@@ -61,6 +62,7 @@ const USER_ITEMS_QUERY = gql`
           id
           url
         }
+        itemType
       }
     }
   }

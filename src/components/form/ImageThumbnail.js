@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import { Button } from 'semantic-ui-react';
 
 class ImageThumbnail extends Component {
 
@@ -13,9 +14,18 @@ class ImageThumbnail extends Component {
 
   render() {
     return(
-      <span>
-        <img src={this.props.image.url} alt="Preview" className="item-preview"/>
-        <button type="button" onClick={this.deleteMessage}>X</button>
+      <span className="img-thumbnail">
+        <img src={this.props.image.url}
+          alt="Preview"
+          className="item-preview"
+        />
+        <Button
+          icon='delete'
+          size='mini'
+          negative
+          onClick={this.deleteMessage}
+          className='img-delete-btn'
+        />
       </span>
     )
   }

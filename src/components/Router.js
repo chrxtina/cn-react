@@ -6,7 +6,7 @@ import Home from './home/Home';
 import ProtectedRoute from './ProtectedRoute';
 import ItemDetails from './ItemDetails';
 import NewItem from './post-items/NewItem';
-import MyItemsListing from './MyItemsListing';
+import MyItemsListing from './my-items/MyItemsListing';
 import WonItemsListing from './WonItemsListing';
 import Conversations from './Conversations';
 import LoginUser from './login-signup/LoginUser';

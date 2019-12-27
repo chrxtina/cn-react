@@ -96,7 +96,9 @@ class ItemDetails extends Component {
                }}
               center={position}
               zoom="15"
-              maxZoom="16">
+              maxZoom="16"
+              doubleClickZoom={false}
+              scrollWheelZoom={false}>
               <TileLayer
                 attribution="&amp;copy <a href=&quot;http://osm.org/copyright&quot;>OpenStreetMap</a> contributors"
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
