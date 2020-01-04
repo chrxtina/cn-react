@@ -6,6 +6,7 @@ import { Map, TileLayer, Circle } from 'react-leaflet';
 import CountdownTimer from './CountdownTimer';
 import ItemContact from './ItemContact';
 import ItemInterestButton from './ItemInterestButton';
+import Carousel from './image-carousel/Carousel';
 
 class ItemDetails extends Component {
 
@@ -63,9 +64,7 @@ class ItemDetails extends Component {
           Item.images.length > 0 && (
             <div className="section one">
               <div className="item-images item-section">
-                {Item.images.map( image => (
-                  <img src={image.url} key={image.id} alt={Item.name} className="item-detail-img"/>
-                ))}
+                <Carousel images={Item.images}/>
               </div>
             </div>
           )

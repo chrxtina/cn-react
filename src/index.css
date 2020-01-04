@@ -258,12 +258,20 @@ nav li {
   padding: 0 1rem;
 }
 
-.item-section:not(:last-child), .timer-btns .column {
-  margin-bottom: 1rem;
+.item-details .section.one {
+  flex: 1 1 30%;
 }
 
 .item-details .section.two {
-  flex-grow: 1;
+  flex: 1 1 45%;
+}
+
+.item-details .section.three {
+  flex: 1 1 25%;
+}
+
+.item-section:not(:last-child), .timer-btns .column {
+  margin-bottom: 1rem;
 }
 
 @media only screen and (max-width: 769px) {
@@ -305,11 +313,50 @@ nav li {
   width: 400px;
 } */
 
-.item-detail-img {
-  max-height: 300px;
-  margin: 1rem;
+/* Image Carousel */
+.carousel-body {
+  position: relative;
+}
+.carousel-ctrl {
+  font-size: 30px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  padding: 0;
+  outline: none;
+  opacity: .7;
+  color: white;
 }
 
+.carousel .next {
+  right: 0;
+}
+
+.carousel .back {
+  left: 0;
+}
+
+.thumbnail-group {
+  display: flex;
+  margin: 0 -.25rem;
+}
+
+.thumbnail {
+  padding: .5rem .25rem;
+  border: none;
+}
+
+.thumbnail img {
+  width: 80px;
+  height: 80px;
+  object-fit: cover;
+}
+
+.thumbnail:not(.carousel__dot--selected) {
+  opacity: .5;
+}
 
 .listing-item, .results-number {
   margin-bottom: 1rem;
