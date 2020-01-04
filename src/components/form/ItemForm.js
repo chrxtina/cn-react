@@ -4,7 +4,7 @@ import { graphql} from 'react-apollo';
 import _ from 'lodash';
 import gql from 'graphql-tag';
 import Dropzone from "react-dropzone";
-import { Form, Input, TextArea, Button, Loader } from 'semantic-ui-react';
+import { Form, Input, TextArea, Button, Loader, Icon } from 'semantic-ui-react';
 import ImageThumbnail from './ImageThumbnail';
 import ItemMap from './ItemMap';
 
@@ -20,7 +20,8 @@ class ItemForm extends Component {
         categoryId: props.item.category.id || "",
         itemType: props.item.itemType || "",
         images: props.item.images || [],
-        imgIdsToDelete: []
+        imgIdsToDelete: [],
+        submitState: ""
     };
     this.handleDeleteImage = this.handleDeleteImage.bind(this);
     this.handleInputChange = this.handleInputChange.bind(this);
@@ -177,6 +178,7 @@ class ItemForm extends Component {
           <Button
             type='submit'
             floated='right'
+            loading={this.state.submitState === "loading"}
           >
             Submit
           </Button>
@@ -204,6 +206,10 @@ class ItemForm extends Component {
       console.warn('You are logged out. Please log in to complete the action');
       return
     }
+
+    this.setState({
+      submitState: "loading"
+    });
 
     const {
       name,
@@ -293,11 +299,20 @@ class ItemForm extends Component {
         }
       ],
     });
+
+    this.setState({
+      submitState: "loading"
+    });
+
     this.props.history.replace('/my-items');
   }
 
   handleUpdateSubmit = async (event) => {
     event.preventDefault();
+
+    this.setState({
+      submitState: "loading"
+    });
 
     const {
       id,
