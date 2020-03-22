@@ -31,7 +31,11 @@ const Carousel = ({images}) => (
         <i className="angle right icon"></i>
       </ButtonNext>
     </div>
-    <Thumbnails images={images} />
+    {
+      images.length > 1 && (
+        <Thumbnails images={images} />
+      )
+    }
   </CarouselProvider>
 );
 

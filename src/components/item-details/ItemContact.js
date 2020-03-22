@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
+import { Message } from 'semantic-ui-react';
 import _ from 'lodash';
 import gql from 'graphql-tag';
+import { Button } from 'semantic-ui-react';
 
 class ItemContact extends Component {
 
@@ -56,8 +58,14 @@ class ItemContact extends Component {
           itemType === "Donation" &&
           currentUser === owner && (
             <div>
+              <Message>
+                <Message.Header>A winner has been chosen.</Message.Header>
+                <p>
+                  Contact the winner below.
+                </p>
+              </Message>
               <div>A winner has been chosen</div>
-              <button onClick={this.handleSendMessage}> Message Winner </button>
+              <Button onClick={this.handleSendMessage}> Message Winner </Button>
             </div>
           )
         }
@@ -66,8 +74,13 @@ class ItemContact extends Component {
           itemType === "Donation" &&
           currentUser === winner && (
             <div>
-              <div>You are the winner!</div>
-              <button onClick={this.handleSendMessage}> Message Owner </button>
+              <Message positive>
+                <Message.Header>Congratulations!</Message.Header>
+                <p>
+                  You are the winner. Contact the owner below.
+                </p>
+              </Message>
+              <Button onClick={this.handleSendMessage}> Message Owner </Button>
             </div>
           )
         }
@@ -77,7 +90,7 @@ class ItemContact extends Component {
           currentUser !== winner &&
           currentUser !== owner && (
             <div>
-              <button onClick={this.handleSendMessage}> Message Requester </button>
+              <Button onClick={this.handleSendMessage}> Message Requester </Button>
             </div>
           )
         }

@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { Message } from 'semantic-ui-react';
 
 class CountdownTimer extends Component {
   constructor (props) {
@@ -65,7 +66,9 @@ class CountdownTimer extends Component {
       <>
         {
           this.state.isExpired ? (
-            <div>Item no longer active</div>
+            <Message negative>
+              <p>Item is no longer active.</p>
+            </Message>
           ) : (
             <div>
               Time left: {

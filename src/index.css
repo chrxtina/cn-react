@@ -247,6 +247,7 @@ nav li {
 .item-details {
   position: relative;
   display: flex;
+  padding: 1rem 2rem;
 }
 
 .item-map {

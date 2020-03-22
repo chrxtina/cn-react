@@ -3,10 +3,11 @@ import gql from 'graphql-tag';
 import { graphql } from 'react-apollo';
 import _ from 'lodash';
 import { Map, TileLayer, Circle } from 'react-leaflet';
+import { Message, Header, Label } from 'semantic-ui-react';
 import CountdownTimer from './CountdownTimer';
 import ItemContact from './ItemContact';
 import ItemInterestButton from './ItemInterestButton';
-import Carousel from './image-carousel/Carousel';
+import Carousel from '../image-carousel/Carousel';
 
 class ItemDetails extends Component {
 
@@ -57,6 +58,13 @@ class ItemDetails extends Component {
 
     let position= [Item.lat, Item.lng];
 
+    let interestBtn = false;
+    if (this.state.currentUserId === null ||
+    Item.interests.find(interest => {return interest.owner.id === this.state.currentUserId}) ||
+    this.state.interestBtnOff === true) {
+      interestBtn = true;
+    }
+
     return (
       <div className="item-details content content-med">
 
@@ -72,12 +80,10 @@ class ItemDetails extends Component {
 
         <div className="section two">
           <div className="item-info item-section">
-            <div>
-              {Item.name}
-            </div>
-            <div>
-              Type: {Item.itemType}
-            </div>
+            <Header as='h1'>{Item.name}</Header>
+            <Label color={ Item.itemType === "Donation" ? "blue" : "green"} horizontal>
+              {Item.itemType}
+            </Label>
             <div>
               Posted on:
               {Item.createdAt}
@@ -125,25 +131,27 @@ class ItemDetails extends Component {
                 />
               )
             }
+          </div>
+          <div className="column two">
             {
-              this.state.currentUserId !== null &&
-              Item.itemType === "Donation" && ((
-                Item.owner.id === this.state.currentUserId ||
-                Item.isExpired === true ||
-                this.state.hasExpired === true ||
-                Item.interests.find(interest => {return interest.owner.id === this.state.currentUserId}) ||
-                this.state.interestBtnOff === true
-              ) ? (
+              Item.itemType === "Donation" &&
+              !Item.isExpired &&
+              !this.state.hasExpired &&
+              this.state.currentUserId === null && (
+                <Message warning>
+                  <Message.Header>You are logged out.</Message.Header>
+                  <p>Log in for a chance to win this item.</p>
+                </Message>
+              )
+            }
+            {
+              Item.itemType === "Donation" &&
+              !Item.isExpired &&
+              !this.state.hasExpired &&
+              Item.owner.id !== this.state.currentUserId && (
+                (
                   <ItemInterestButton
-                    disabled={true}
-                    currentUserId={this.state.currentUserId}
-                    itemId={Item.id}
-                  >
-                    Interested!
-                  </ItemInterestButton>
-                ) : (
-                  <ItemInterestButton
-                    disabled={false}
+                    disabled={interestBtn}
                     currentUserId={this.state.currentUserId}
                     itemId={Item.id}
                     disableInterestBtn={this.disableInterestBtn}
@@ -153,47 +161,75 @@ class ItemDetails extends Component {
                 )
               )
             }
+
             {
               Item.itemType === "Donation" &&
-              this.state.currentUserId === null &&
-              this.state.isExpire !== false && (
-                <div>You're logged out. Log in for a chance to win this item!</div>
-              )
-            }
-          </div>
-          <div className="column two">
-            {
-              Item.itemType === "Donation" &&
-              Item.isExpired && (
-                Item.winner !== null ? (
-                  ((this.state.currentUserId === Item.owner.id) ||
-                  (this.state.currentUserId === Item.winner.id)) &&
-                  (
-                    <ItemContact
-                     currentUser={this.state.currentUserId}
-                     owner={Item.owner.id}
-                     winner={Item.winner.id}
-                     itemType={Item.itemType}
-                   />
+              (
+                Item.isExpired ? (
+                  Item.winner !== null ? (
+                    ((this.state.currentUserId === Item.owner.id) ||
+                    (this.state.currentUserId === Item.winner.id)) &&
+                    (
+                      <ItemContact
+                       currentUser={this.state.currentUserId}
+                       owner={Item.owner.id}
+                       winner={Item.winner.id}
+                       itemType={Item.itemType}
+                     />
+                    )
+                  ) : (
+                    (this.state.currentUserId === Item.owner.id) && (
+                      <>
+                        <Message warning>
+                          <p>Item expired with no winner, repost your item.</p>
+                        </Message>
+                      </>
+                    )
                   )
                 ) : (
                   (this.state.currentUserId === Item.owner.id) && (
-                    <div>Item expired with no winner, repost your item</div>
+                    <>
+                      <Message>
+                        <Message.Header>Your item is still active.</Message.Header>
+                        <p>You may contact the winner once one is chosen.</p>
+                      </Message>
+                    </>
                   )
                 )
               )
             }
             {
               Item.itemType === "Request" && (
-                this.state.currentUserId ? (
-                  this.state.currentUserId !== Item.owner.id && (
-                    <ItemContact
-                     currentUser={this.state.currentUserId}
-                     owner={Item.owner.id}
-                     itemType={Item.itemType}
-                   />
-                 )
-                ) : "You are logged out. Log in to contact the requester"
+                Item.isExpired ? (
+                  this.state.currentUserId && (
+                    this.state.currentUserId === Item.owner.id && (
+                      <Message warning>
+                        <Message.Header>This is your item.</Message.Header>
+                        <p>Repost it again.</p>
+                      </Message>
+                    )
+                  )
+                ) : (
+                  this.state.currentUserId ? (
+                    this.state.currentUserId === Item.owner.id ? (
+                      <Message>
+                        <Message.Header>This is your item.</Message.Header>
+                        <p>Good luck!</p>
+                      </Message>
+                    ) : (
+                      <ItemContact
+                       currentUser={this.state.currentUserId}
+                       owner={Item.owner.id}
+                       itemType={Item.itemType}
+                     />
+                    )
+                  ) : (
+                    <Message warning>
+                      <Message.Header>You are logged out.</Message.Header>
+                      <p>Log in to contact the requester</p>
+                    </Message>
+                  )
+                )
               )
             }
           </div>

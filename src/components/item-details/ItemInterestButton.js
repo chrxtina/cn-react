@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import { graphql } from 'react-apollo';
 import gql from 'graphql-tag';
+import { Button } from 'semantic-ui-react';
 
 class ItemInterestButton extends Component {
 
   render () {
     return (
-      <button onClick={this.createInterest} disabled={this.props.disabled}>Interested</button>
+      <Button onClick={this.createInterest} disabled={this.props.disabled}>Interested</Button>
     )
   }
 

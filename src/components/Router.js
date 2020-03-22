@@ -4,7 +4,7 @@ import { AuthProvider } from '../context/Auth';
 import Header from './header/header';
 import Home from './home/Home';
 import ProtectedRoute from './ProtectedRoute';
-import ItemDetails from './ItemDetails';
+import ItemDetails from './item-details/ItemDetails';
 import NewItem from './post-items/NewItem';
 import MyItemsListing from './my-items/MyItemsListing';
 import WonItemsListing from './WonItemsListing';

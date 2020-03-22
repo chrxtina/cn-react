@@ -4,7 +4,7 @@ import { graphql} from 'react-apollo';
 import _ from 'lodash';
 import gql from 'graphql-tag';
 import Dropzone from "react-dropzone";
-import { Form, Input, TextArea, Button, Loader, Icon } from 'semantic-ui-react';
+import { Form, Input, TextArea, Button, Loader } from 'semantic-ui-react';
 import ImageThumbnail from './ImageThumbnail';
 import ItemMap from './ItemMap';
 
