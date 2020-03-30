@@ -7,7 +7,7 @@ import ProtectedRoute from './ProtectedRoute';
 import ItemDetails from './item-details/ItemDetails';
 import NewItem from './post-items/NewItem';
 import MyItemsListing from './my-items/MyItemsListing';
-import WonItemsListing from './WonItemsListing';
+import WonItemsListing from './won-items/WonItemsListing';
 import Conversations from './Conversations';
 import LoginUser from './login-signup/LoginUser';
 import CreateUser from './login-signup/CreateUser';

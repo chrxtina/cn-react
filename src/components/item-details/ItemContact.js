@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
-import { Message } from 'semantic-ui-react';
+import { Message, Button } from 'semantic-ui-react';
 import _ from 'lodash';
 import gql from 'graphql-tag';
-import { Button } from 'semantic-ui-react';
 
 class ItemContact extends Component {
 
   constructor (props) {
     super(props);
     this.state = {
-      convos: [],
-      convoId: ""
+      convos: props.conversationQuery.allConversations || [],
+      convoId: _.get(props.conversationQuery, "allConversations[0].id", "")
     };
     this.handleSendMessage = this.handleSendMessage.bind(this);
   }
@@ -50,7 +49,7 @@ class ItemContact extends Component {
 
   render() {
 
-    const { currentUser, owner, winner, itemType } = this.props;
+    const { currentUser, owner, winner, itemType, isCardBtn } = this.props;
 
     return (
       <>
@@ -72,7 +71,12 @@ class ItemContact extends Component {
 
         {
           itemType === "Donation" &&
-          currentUser === winner && (
+          currentUser === winner &&
+          isCardBtn ? (
+            <Button basic color='blue' onClick={this.handleSendMessage}>
+              Contact Owner
+            </Button>
+          ) : (
             <div>
               <Message positive>
                 <Message.Header>Congratulations!</Message.Header>

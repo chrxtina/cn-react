@@ -3,7 +3,8 @@ import { withRouter } from 'react-router-dom';
 import { graphql } from 'react-apollo';
 import _ from 'lodash';
 import gql from 'graphql-tag';
-import WonItemListingLink from './WonItemListingLink';
+import WonItem from './WonItem';
+import { Card } from 'semantic-ui-react';
 
 class WonItemsListing extends Component {
 
@@ -15,6 +16,11 @@ class WonItemsListing extends Component {
     const currentUser = this.props.loggedInUserQuery.loggedInUser;
     const myItems = this.props.userItemsQuery.user.itemsWon;
 
+    let itemsWonIds = [];
+    myItems.forEach(item => {
+      itemsWonIds.push(item.id);
+    });
+
     if (currentUser === undefined) {
       return (<div>You are not logged in</div>)
     }
@@ -22,13 +28,19 @@ class WonItemsListing extends Component {
     return (
       <div className="content content-med">
         <h3>Won Items</h3>
-        <ul>
+        <Card.Group>
           {
             myItems.length > 0 ? myItems.map(item =>(
-              <WonItemListingLink key={item.id} item={item} refresh={() => this.props.userItemsQuery.refetch()} />
+              <WonItem
+                key={item.id}
+                item={item}
+                currentUserId={currentUser.id}
+                owner={item.owner.id}
+                itemsWonIds={itemsWonIds}
+                refresh={() => this.props.userItemsQuery.refetch()} />
             )) : "You haven't won any items"
           }
-        </ul>
+        </Card.Group>
       </div>
     );
   }
@@ -49,6 +61,13 @@ const USER_ITEMS_QUERY = gql`
       itemsWon {
         id
         name
+        owner {
+          id
+        }
+        winner {
+          id
+        }
+        itemType
         images {
           url
         }
